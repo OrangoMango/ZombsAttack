@@ -24,10 +24,20 @@ class LifeLabel:
                 ppos = self.game.canvas.coords(self.player.id)
                 px, py, px1, py1 = ppos[0], ppos[1], ppos[2], ppos[3]
                 x, y, x1, y1 = px-10, py1+5, px+60, py1+5+10
-                self.id = self.game.canvas.create_rectangle(x, y, x1, y1, fill="green", width=2)
                 self.value = self.player.life
+                self.id = self.game.canvas.create_rectangle(x, y, x1, y1, fill="green", width=2)
         def getColorValue(self):
-                pass
+                # red, orange, yellow, lightgreen, green
+                if self.value <= 20:
+                        return "red"
+                elif self.value <= 40:
+                        return "red"
+                elif self.value <= 60:
+                        return "red"
+                elif self.value <= 80:
+                        return "red"
+                elif self.value <= 100:
+                        return "red"
 
 class Player:
         def __init__(self, game):
