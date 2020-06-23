@@ -23,19 +23,22 @@ class LifeLabel:
                 self.player = player
                 ppos = self.game.canvas.coords(self.player.id)
                 px, py, px1, py1 = ppos[0], ppos[1], ppos[2], ppos[3]
-                x, y, x1, y1 = px-10, py-15, px+60, py-15+10
+                x, y, x1, y1 = px-10, py1+5, px+60, py1+5+10
                 self.id = self.game.canvas.create_rectangle(x, y, x1, y1, fill="green", width=2)
                 self.value = self.player.life
+        def getColorValue(self):
+                pass
 
 class Player:
         def __init__(self, game):
                 self.game = game
                 self.x, self.y = 0, 0
-                self.id = self.game.canvas.create_rectangle(225, 440, 275, 490, fill="red")
+                self.id = self.game.canvas.create_rectangle(225, 430, 275, 480, fill="red")
                 self.game.tk.bind("<KeyPress>", self.press)
                 self.game.tk.bind("<KeyRelease>", self.release)
                 self.life = 100
                 self.timer = 0
+                self.lifelabel = LifeLabel(self.game, self)
         def press(self, event):
                 if event.char == "d":
                         self.x = 3
@@ -56,6 +59,7 @@ class Player:
                 self.x = 0
         def draw(self):
                 self.game.canvas.move(self.id, self.x, self.y)
+                self.game.canvas.move(self.lifelabel.id, self.x, self.y)
                 self.timer -= 1
 
 class Patron:
@@ -80,7 +84,7 @@ class Patron:
 if __name__ == "__main__":
         g = Game()
         p = Player(g)
-        LifeLabel(g, p)
+        #LifeLabel(g, p)
         try:
                 g.mainloop()
         except Exception as e:
