@@ -17,6 +17,10 @@ class Game:
                         self.tk.update()
                         time.sleep(0.01)
 
+class LifeLabel:
+        def __init__(self):
+                pass
+
 class Player:
         def __init__(self, game):
                 self.game = game
@@ -51,16 +55,25 @@ class Patron:
         def __init__(self, game, player, tag=0):
                 self.game = game
                 self.player = player
+                self.tag = tag
                 pl_pos = self.game.canvas.coords(self.player.id)
                 x, y, x1, y1 = pl_pos[0]+((pl_pos[2]-pl_pos[0])/2), pl_pos[1]-30, pl_pos[0]+((pl_pos[2]-pl_pos[0])/2), pl_pos[1]-5
-                self.id = self.game.canvas.create_line(x, y, x1, y1, width=10)
+                self.id = self.game.canvas.create_line(x, y, x1, y1, width=10, tags="patron_{0}".format(self.tag))
         def draw(self):
                 self.game.canvas.move(self.id, 0, -5)
+                pos = self.game.canvas.coords(self.id)
+                #print(self.game.patrons)
+                if pos[1] < 0:
+                        for i in self.game.patrons:
+                                if i.tag == self.tag:
+                                        self.game.patrons.remove(i)
+                                        break
+                        self.game.canvas.delete("patron_{0}".format(self.tag))
 
 if __name__ == "__main__":
         g = Game()
         p = Player(g)
         try:
                 g.mainloop()
-        except:
-                print("Program end")
+        except Exception as e:
+                print("Program end %s" % e)
