@@ -59,6 +59,11 @@ class LifeLabel:
                 self.value = self.player.life
                 self.id = self.game.canvas.create_rectangle(x, y, x1, y1, width=2)
                 self.labid = self.game.canvas.create_rectangle(x, y, x+self.getCoordValue()-1, y1-1, fill=self.getColorValue())
+        def delete(self):
+                self.game.canvas.delete(self.id)
+                self.game.canvas.delete(self.labid)
+        def move(self, *args):
+                pass
 
 class Player:
         def __init__(self, game):
@@ -100,15 +105,25 @@ class Player:
                 self.timer -= 1
 
 class Zombie:
-        def __init__(self, game):
+        def __init__(self, game, tag=0):
                 self.game = game
                 self.life = 100
-                self.id = self.game.canvas.create_rectangle(20, 80, 70, 130, fill="green")
+                self.tag = tag
+                self.id = self.game.canvas.create_rectangle(20, 80, 70, 130, fill="green", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
         def draw(self):
                 self.game.canvas.move(self.id, 0, 1)
                 self.game.canvas.move(self.lifelabel.id, 0, 1)
                 self.game.canvas.move(self.lifelabel.labid, 0, 1)
+                if self.life <= 0:
+                        self.die()
+        def die(self):
+                for i in self.game.zombies:
+                        if i.tag == self.tag:
+                                self.game.zombies.remove(i)
+                                break
+                self.game.canvas.delete("zombie_{0}".format(self.tag))
+                self.lifelabel.delete()
 
 class Patron:
         def __init__(self, game, player, tag=0):
@@ -121,18 +136,23 @@ class Patron:
         def draw(self):
                 self.game.canvas.move(self.id, 0, -5)
                 pos = self.game.canvas.coords(self.id)
-                #print(self.game.patrons)
-                if pos[1] < 0:
-                        for i in self.game.patrons:
-                                if i.tag == self.tag:
-                                        self.game.patrons.remove(i)
-                                        break
-                        self.game.canvas.delete("patron_{0}".format(self.tag))
                 for zombie in self.game.zombies:
                        pos = self.game.canvas.coords(self.id)
                        z_pos = self.game.canvas.coords(zombie.id)
-                       if True:
-                               pass
+                       if pos[1] >= z_pos[1] and pos[1] <= z_pos[3]:
+                               if pos[0] >= z_pos[0] and pos[0] <= z_pos[2]:
+                                       zombie.life -= 20
+                                       zombie.lifelabel.update()
+                                       self.delete()
+                #print(self.game.patrons)
+                if pos[1] < 0:
+                        self.delete()
+        def delete(self):
+                for i in self.game.patrons:
+                        if i.tag == self.tag:
+                                self.game.patrons.remove(i)
+                                break
+                self.game.canvas.delete("patron_{0}".format(self.tag))
 
 if __name__ == "__main__":
         g = Game()
