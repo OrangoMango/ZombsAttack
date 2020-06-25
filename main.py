@@ -129,6 +129,8 @@ class Zombie:
                                 break
                 self.game.canvas.delete("zombie_{0}".format(self.tag))
                 self.lifelabel.delete()
+                z = Zombie(g)
+                self.game.zombies.append(z)
 
 class Patron:
         def __init__(self, game, player, tag=0):
