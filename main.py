@@ -1,5 +1,5 @@
 from tkinter import *
-import time
+import time, random
 
 class Game:
         def __init__(self):
@@ -110,11 +110,11 @@ class Player:
                 self.timer -= 1
 
 class Zombie:
-        def __init__(self, game, tag=0):
+        def __init__(self, game, x, y, w, h, tag=0):
                 self.game = game
                 self.life = 100
                 self.tag = tag
-                self.id = self.game.canvas.create_rectangle(20, 80, 70, 130, fill="green", tags="zombie_{0}".format(self.tag))
+                self.id = self.game.canvas.create_rectangle(x, y, x+w, y+h, fill="green", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
         def draw(self):
                 self.game.canvas.move(self.id, 0, 1)
@@ -129,7 +129,7 @@ class Zombie:
                                 break
                 self.game.canvas.delete("zombie_{0}".format(self.tag))
                 self.lifelabel.delete()
-                z = Zombie(g)
+                z = Zombie(g, random.randint(20, 420), -90, 50, 50)
                 self.game.zombies.append(z)
 
 class Patron:
@@ -164,7 +164,7 @@ class Patron:
 if __name__ == "__main__":
         g = Game()
         p = Player(g)
-        z = Zombie(g)
+        z = Zombie(g, 20, -90, 50, 50)
         g.zombies.append(z)
         try:
                 g.mainloop()
