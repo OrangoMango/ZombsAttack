@@ -18,6 +18,9 @@ class Game:
                         for pat in self.patrons:
                                 pat.draw()
                         self.tk.update()
+                        if False:#random.randint(1, 1000) <= 5:
+                                z = Zombie(self, random.randint(20, 420), -90, 50, 50)
+                                self.zombies.append(z)
                         time.sleep(0.01)
 
 class LifeLabel:
@@ -126,10 +129,11 @@ class Zombie:
                 for i in self.game.zombies:
                         if i.tag == self.tag:
                                 self.game.zombies.remove(i)
+                                #print(len(self.game.zombies))
                                 break
                 self.game.canvas.delete("zombie_{0}".format(self.tag))
                 self.lifelabel.delete()
-                z = Zombie(g, random.randint(20, 420), -90, 50, 50)
+                z = Zombie(self.game, random.randint(20, 420), -90, 50, 50)
                 self.game.zombies.append(z)
 
 class Patron:
@@ -169,4 +173,4 @@ if __name__ == "__main__":
         try:
                 g.mainloop()
         except Exception as e:
-                print("Program end %s" % e)
+               print("Program end %s" % e)
