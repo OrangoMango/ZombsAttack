@@ -5,7 +5,7 @@ class Game:
         def __init__(self):
                 self.tk = Tk()
                 self.tk.title("ZombsAttack")
-                self.canvas = Canvas(self.tk, width=500, height=500, bg="gray")
+                self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgray")
                 self.canvas.pack()
                 self.p_n = 0
                 self.patrons = []
