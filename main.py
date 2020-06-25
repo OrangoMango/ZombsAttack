@@ -32,6 +32,7 @@ class LifeLabel:
                         x, y, x1, y1 = px-10, py-15, px+60, py-15+10
                 else:
                         raise ValueError("Positions are only top and bottom")
+                self.position = position
                 self.value = self.player.life
                 self.id = self.game.canvas.create_rectangle(x, y, x1, y1, width=2)
                 self.labid = self.game.canvas.create_rectangle(x, y, x+self.getCoordValue()-1, y1-1, fill=self.getColorValue())
@@ -55,15 +56,19 @@ class LifeLabel:
                 self.game.canvas.delete(self.labid)
                 ppos = self.game.canvas.coords(self.player.id)
                 px, py, px1, py1 = ppos[0], ppos[1], ppos[2], ppos[3]
-                x, y, x1, y1 = px-10, py1+5, px+60, py1+5+10
+                position = self.position
+                if position == "bottom":
+                        x, y, x1, y1 = px-10, py1+5, px+60, py1+5+10
+                elif position == "top":
+                        x, y, x1, y1 = px-10, py-15, px+60, py-15+10
+                else:
+                        raise ValueError("Positions are only top and bottom")
                 self.value = self.player.life
                 self.id = self.game.canvas.create_rectangle(x, y, x1, y1, width=2)
                 self.labid = self.game.canvas.create_rectangle(x, y, x+self.getCoordValue()-1, y1-1, fill=self.getColorValue())
         def delete(self):
                 self.game.canvas.delete(self.id)
                 self.game.canvas.delete(self.labid)
-        def move(self, *args):
-                pass
 
 class Player:
         def __init__(self, game):
