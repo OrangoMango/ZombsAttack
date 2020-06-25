@@ -152,7 +152,7 @@ class Patron:
                        z_pos = self.game.canvas.coords(zombie.id)
                        if pos[1] >= z_pos[1] and pos[1] <= z_pos[3]:
                                if pos[0] >= z_pos[0] and pos[0] <= z_pos[2]:
-                                       zombie.life -= 20
+                                       zombie.life -= 15
                                        zombie.lifelabel.update()
                                        self.delete()
                 #print(self.game.patrons)
