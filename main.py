@@ -5,7 +5,7 @@ class Game:
         def __init__(self):
                 self.tk = Tk()
                 self.tk.title("ZombsAttack")
-                self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgreen")
+                self.canvas = Canvas(self.tk, width=500, height=500, bg="gray")
                 self.canvas.pack()
                 self.p_n = 0
                 self.patrons = []
@@ -25,19 +25,32 @@ class LifeLabel:
                 px, py, px1, py1 = ppos[0], ppos[1], ppos[2], ppos[3]
                 x, y, x1, y1 = px-10, py1+5, px+60, py1+5+10
                 self.value = self.player.life
-                self.id = self.game.canvas.create_rectangle(x, y, x1, y1, fill="green", width=2)
+                self.id = self.game.canvas.create_rectangle(x, y, x1, y1, width=2)
+                self.labid = self.game.canvas.create_rectangle(x, y, x+self.getCoordValue()-1, y1-1, fill=self.getColorValue())
         def getColorValue(self):
                 # red, orange, yellow, lightgreen, green
                 if self.value <= 20:
                         return "red"
                 elif self.value <= 40:
-                        return "red"
+                        return "orange"
                 elif self.value <= 60:
-                        return "red"
+                        return "yellow"
                 elif self.value <= 80:
-                        return "red"
+                        return "lightgreen"
                 elif self.value <= 100:
-                        return "red"
+                        return "green"
+        def getCoordValue(self):
+                # percentage
+                return int(70/100*self.value)
+        def update(self):
+                self.game.canvas.delete(self.id)
+                self.game.canvas.delete(self.labid)
+                ppos = self.game.canvas.coords(self.player.id)
+                px, py, px1, py1 = ppos[0], ppos[1], ppos[2], ppos[3]
+                x, y, x1, y1 = px-10, py1+5, px+60, py1+5+10
+                self.value = self.player.life
+                self.id = self.game.canvas.create_rectangle(x, y, x1, y1, width=2)
+                self.labid = self.game.canvas.create_rectangle(x, y, x+self.getCoordValue()-1, y1-1, fill=self.getColorValue())
 
 class Player:
         def __init__(self, game):
@@ -64,12 +77,18 @@ class Player:
                 p = Patron(self.game, self, tag=self.game.p_n)
                 self.game.patrons.append(p)
                 self.game.p_n += 1
+                if self.life >= 5:
+                        self.life -= 5
+                else:
+                        self.life = 100
+                self.lifelabel.update()
                 #print(self.game.p_n)
         def release(self, event):
                 self.x = 0
         def draw(self):
                 self.game.canvas.move(self.id, self.x, self.y)
                 self.game.canvas.move(self.lifelabel.id, self.x, self.y)
+                self.game.canvas.move(self.lifelabel.labid, self.x, self.y)
                 self.timer -= 1
 
 class Patron:
