@@ -167,19 +167,19 @@ class Patron:
                 self.tag = tag
                 pl_pos = self.player.getCoord()
                 if self.player.direction == "n":
-                        x, y, x1, y1 = pl_pos[0]+((pl_pos[2]-pl_pos[0])/2)-5, pl_pos[1]-30, pl_pos[0]+((pl_pos[2]-pl_pos[0])/2)+5, pl_pos[1]-5
+                        x, y, x1, y1 = pl_pos[0]+((pl_pos[2]-pl_pos[0])/2)-2, pl_pos[1]-30, pl_pos[0]+((pl_pos[2]-pl_pos[0])/2)+2, pl_pos[1]-5
                         self.yd = -5
                         self.xd = 0
                 elif self.player.direction == "s":
-                        x, y, x1, y1 = pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)-5, pl_pos[2]+30, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)+5, pl_pos[2]+5
+                        x, y, x1, y1 = pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)-2, pl_pos[2]+30, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)+2, pl_pos[2]+5
                         self.yd = 5
                         self.xd = 0
                 elif self.player.direction == "e":
-                        x, y, x1, y1 = pl_pos[2]+5, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)-5, pl_pos[2]+5+25, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)+5
+                        x, y, x1, y1 = pl_pos[2]+2, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)-5, pl_pos[2]+5+25, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)+2
                         self.xd = 5
                         self.yd = 0
                 elif self.player.direction == "w":
-                        x, y, x1, y1 = pl_pos[0]-5-25, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)-5, pl_pos[0]-5, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)+5
+                        x, y, x1, y1 = pl_pos[0]-2-25, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)-5, pl_pos[0]-5, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)+2
                         self.xd = -5
                         self.yd = 0
                 else:
