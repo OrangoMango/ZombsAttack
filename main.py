@@ -10,6 +10,7 @@ class Game:
                 self.p_n = 0
                 self.patrons = []
                 self.zombies = []
+                self.zombies_number = 0
         def mainloop(self):
                 while True:
                         p.draw()
@@ -18,8 +19,9 @@ class Game:
                         for pat in self.patrons:
                                 pat.draw()
                         self.tk.update()
-                        if False:#random.randint(1, 1000) <= 5:
-                                z = Zombie(self, random.randint(20, 420), -90, 50, 50)
+                        if random.randint(1, 10000) <= 19:
+                                z = Zombie(self, random.randint(20, 420), -90, 50, 50, tag=self.zombies_number)
+                                self.zombies_number += 1
                                 self.zombies.append(z)
                         time.sleep(0.01)
 
@@ -139,6 +141,7 @@ class Zombie:
                 self.game = game
                 self.life = 100
                 self.tag = tag
+                print(self.tag)
                 self.id = self.game.canvas.create_rectangle(x, y, x+w, y+h, fill="green", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
         def draw(self):
@@ -147,6 +150,17 @@ class Zombie:
                 self.game.canvas.move(self.lifelabel.labid, 0, 1)
                 
                 p = self.getCoord()
+                playerg = self.game.player.getCoord()
+                if p[3] >= playerg[1] and (p[2] >= playerg[0] or p[2] <= playerg[2]):
+                        self.game.canvas.move(self.id, 0, -15)
+                        self.game.canvas.move(self.lifelabel.id, 0, -15)
+                        self.game.canvas.move(self.lifelabel.labid, 0, -15)
+                        self.life -= 15
+                        self.lifelabel.update()
+                        self.game.player.life -= 10
+                        self.game.player.lifelabel.update()
+                if not p:
+                        return
                 if p[3] >= 500:
                         self.game.canvas.move(self.id, 0, -15)
                         self.game.canvas.move(self.lifelabel.id, 0, -15)
@@ -163,7 +177,8 @@ class Zombie:
                                 break
                 self.game.canvas.delete("zombie_{0}".format(self.tag))
                 self.lifelabel.delete()
-                z = Zombie(self.game, random.randint(20, 420), -90, 50, 50)
+                z = Zombie(self.game, random.randint(20, 420), -90, 50, 50, tag=self.game.zombies_number)
+                self.game.zombies_number += 1
                 self.game.zombies.append(z)
         def getCoord(self):
                 return self.game.canvas.coords(self.id)
@@ -194,19 +209,22 @@ class Patron:
                         raise ValueError("Invalid direction given")
                 self.id = self.game.canvas.create_rectangle(x, y, x1, y1, width=10, tags="patron_{0}".format(self.tag))
         def draw(self):
-                self.game.canvas.move(self.id, self.xd, self.yd)
                 pos = self.game.canvas.coords(self.id)
+                if pos[1] < 0:
+                        self.delete()
                 for zombie in self.game.zombies:
-                       pos = self.game.canvas.coords(self.id)
-                       z_pos = self.game.canvas.coords(zombie.id)
+                       z_pos = zombie.getCoord()
+                       if not z_pos:
+                                continue
+                       #print(pos, z_pos)
                        if pos[1] >= z_pos[1] and pos[1] <= z_pos[3]:
                                if pos[0] >= z_pos[0] and pos[0] <= z_pos[2]:
                                        zombie.life -= 15
                                        zombie.lifelabel.update()
                                        self.delete()
+                                       break
+                self.game.canvas.move(self.id, self.xd, self.yd)
                 #print(self.game.patrons)
-                if pos[1] < 0:
-                        self.delete()
         def delete(self):
                 for i in self.game.patrons:
                         if i.tag == self.tag:
@@ -217,10 +235,12 @@ class Patron:
 if __name__ == "__main__":
         g = Game()
         p = Player(g)
-        z = Zombie(g, 20, -90, 50, 50)
+        g.player = p
+        z = Zombie(g, 20, -90, 50, 50, tag=g.zombies_number)
+        g.zombies_number += 1
         g.zombies.append(z)
-        #g.mainloop()
-        try:
-                g.mainloop()
-        except Exception as e:
-               print("Program end %s" % e)
+        g.mainloop()
+       # try:
+        #         g.mainloop()
+       # except Exception as e:
+         #      print("Program end %s" % e)
