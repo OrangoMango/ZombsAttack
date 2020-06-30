@@ -27,7 +27,7 @@ class LifeLabel:
         def __init__(self, game, player, position="bottom"):
                 self.game = game
                 self.player = player
-                ppos = self.game.canvas.coords(self.player.id)
+                ppos = self.player.getCoord()
                 px, py, px1, py1 = ppos[0], ppos[1], ppos[2], ppos[3]
                 if position == "bottom":
                         x, y, x1, y1 = px-10, py1+5, px+60, py1+5+10
@@ -76,7 +76,8 @@ class LifeLabel:
 class Player:
         def __init__(self, game):
                 self.game = game
-                self.id = self.game.canvas.create_rectangle(200, 200, 250, 250, fill="red")
+                self.image = PhotoImage(file="Player.gif")
+                self.id = self.game.canvas.create_image(200, 200, image=self.image, anchor="nw")
                 self.game.tk.bind("<KeyPress>", self.press)
                 self.game.tk.bind("<KeyRelease>", self.release)
                 self.life = 100
@@ -129,6 +130,9 @@ class Player:
                 for p in self.game.patrons:
                         self.game.canvas.move(p.id, self.mx, self.my)
                 self.timer -= 1
+        def getCoord(self):
+                pos = self.game.canvas.coords(self.id)
+                return pos + [pos[0]+50, pos[1]+50]
 
 class Zombie:
         def __init__(self, game, x, y, w, h, tag=0):
@@ -153,13 +157,15 @@ class Zombie:
                 self.lifelabel.delete()
                 z = Zombie(self.game, random.randint(20, 420), -90, 50, 50)
                 self.game.zombies.append(z)
+        def getCoord(self):
+                return self.game.canvas.coords(self.id)
 
 class Patron:
         def __init__(self, game, player, tag=0):
                 self.game = game
                 self.player = player
                 self.tag = tag
-                pl_pos = self.game.canvas.coords(self.player.id)
+                pl_pos = self.player.getCoord()
                 if self.player.direction == "n":
                         x, y, x1, y1 = pl_pos[0]+((pl_pos[2]-pl_pos[0])/2)-5, pl_pos[1]-30, pl_pos[0]+((pl_pos[2]-pl_pos[0])/2)+5, pl_pos[1]-5
                         self.yd = -5
