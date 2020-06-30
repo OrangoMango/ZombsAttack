@@ -59,7 +59,7 @@ class LifeLabel:
         def update(self):
                 self.game.canvas.delete(self.id)
                 self.game.canvas.delete(self.labid)
-                ppos = self.game.canvas.coords(self.player.id)
+                ppos = self.player.getCoord()
                 px, py, px1, py1 = ppos[0], ppos[1], ppos[2], ppos[3]
                 position = self.position
                 if position == "bottom":
