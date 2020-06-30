@@ -76,18 +76,24 @@ class LifeLabel:
 class Player:
         def __init__(self, game):
                 self.game = game
-                self.x, self.y = 0, 0
-                self.id = self.game.canvas.create_rectangle(225, 430, 275, 480, fill="red")
+                self.id = self.game.canvas.create_rectangle(200, 200, 250, 250, fill="red")
                 self.game.tk.bind("<KeyPress>", self.press)
                 self.game.tk.bind("<KeyRelease>", self.release)
                 self.life = 100
                 self.timer = 0
+                self.direction = "n"
                 self.lifelabel = LifeLabel(self.game, self)
         def press(self, event):
                 if event.char == "d":
-                        self.x = 3
+                        #self.x = 3
+                        self.direction = "e"
                 elif event.char == "a":
-                        self.x = -3
+                        #self.x = -3
+                        self.direction = "w"
+                elif event.char == "w":
+                        self.direction = "n"
+                elif event.char == "s":
+                        self.direction = "s"
                 elif event.keysym == "space":
                         if self.timer < 0:
                                 self.shoot()
@@ -107,9 +113,10 @@ class Player:
         def release(self, event):
                 self.x = 0
         def draw(self):
-                self.game.canvas.move(self.id, self.x, self.y)
+                '''self.game.canvas.move(self.id, self.x, self.y)
                 self.game.canvas.move(self.lifelabel.id, self.x, self.y)
-                self.game.canvas.move(self.lifelabel.labid, self.x, self.y)
+                self.game.canvas.move(self.lifelabel.labid, self.x, self.y)'''
+                #print(self.direction)
                 self.timer -= 1
 
 class Zombie:
@@ -142,10 +149,27 @@ class Patron:
                 self.player = player
                 self.tag = tag
                 pl_pos = self.game.canvas.coords(self.player.id)
-                x, y, x1, y1 = pl_pos[0]+((pl_pos[2]-pl_pos[0])/2), pl_pos[1]-30, pl_pos[0]+((pl_pos[2]-pl_pos[0])/2), pl_pos[1]-5
-                self.id = self.game.canvas.create_line(x, y, x1, y1, width=10, tags="patron_{0}".format(self.tag))
+                if self.player.direction == "n":
+                        x, y, x1, y1 = pl_pos[0]+((pl_pos[2]-pl_pos[0])/2)-5, pl_pos[1]-30, pl_pos[0]+((pl_pos[2]-pl_pos[0])/2)+5, pl_pos[1]-5
+                        self.yd = -5
+                        self.xd = 0
+                elif self.player.direction == "s":
+                        x, y, x1, y1 = pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)-5, pl_pos[2]+30, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)+5, pl_pos[2]+5
+                        self.yd = 5
+                        self.xd = 0
+                elif self.player.direction == "e":
+                        x, y, x1, y1 = pl_pos[2]+5, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)-5, pl_pos[2]+5+25, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)+5
+                        self.xd = 5
+                        self.yd = 0
+                elif self.player.direction == "w":
+                        x, y, x1, y1 = pl_pos[0]-5-25, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)-5, pl_pos[0]-5, pl_pos[1]+((pl_pos[3]-pl_pos[1])/2)+5
+                        self.xd = -5
+                        self.yd = 0
+                else:
+                        raise ValueError("Invalid direction given")
+                self.id = self.game.canvas.create_rectangle(x, y, x1, y1, width=10, tags="patron_{0}".format(self.tag))
         def draw(self):
-                self.game.canvas.move(self.id, 0, -5)
+                self.game.canvas.move(self.id, self.xd, self.yd)
                 pos = self.game.canvas.coords(self.id)
                 for zombie in self.game.zombies:
                        pos = self.game.canvas.coords(self.id)
