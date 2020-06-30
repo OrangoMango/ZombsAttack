@@ -82,17 +82,22 @@ class Player:
                 self.life = 100
                 self.timer = 0
                 self.direction = "n"
+                self.mx, self.my = 0, 0
                 self.lifelabel = LifeLabel(self.game, self)
         def press(self, event):
                 if event.char == "d":
                         #self.x = 3
+                        self.mx, self.my = -3, 0
                         self.direction = "e"
                 elif event.char == "a":
                         #self.x = -3
+                        self.mx, self.my = 3, 0
                         self.direction = "w"
                 elif event.char == "w":
+                        self.mx, self.my = 0, 3
                         self.direction = "n"
                 elif event.char == "s":
+                        self.mx, self.my = 0, -3
                         self.direction = "s"
                 elif event.keysym == "space":
                         if self.timer < 0:
@@ -104,19 +109,25 @@ class Player:
                 p = Patron(self.game, self, tag=self.game.p_n)
                 self.game.patrons.append(p)
                 self.game.p_n += 1
-                if self.life >= 5:
+                '''if self.life >= 5:
                         self.life -= 5
                 else:
                         self.life = 100
-                self.lifelabel.update()
+                self.lifelabel.update()'''
                 #print(self.game.p_n)
         def release(self, event):
-                self.x = 0
+                self.mx, self.my = 0, 0
         def draw(self):
                 '''self.game.canvas.move(self.id, self.x, self.y)
                 self.game.canvas.move(self.lifelabel.id, self.x, self.y)
                 self.game.canvas.move(self.lifelabel.labid, self.x, self.y)'''
                 #print(self.direction)
+                for z in self.game.zombies:
+                        self.game.canvas.move(z.id, self.mx, self.my)
+                        self.game.canvas.move(z.lifelabel.id, self.mx, self.my)
+                        self.game.canvas.move(z.lifelabel.labid, self.mx, self.my)
+                for p in self.game.patrons:
+                        self.game.canvas.move(p.id, self.mx, self.my)
                 self.timer -= 1
 
 class Zombie:
