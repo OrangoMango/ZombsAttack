@@ -151,7 +151,7 @@ class Zombie:
                 
                 p = self.getCoord()
                 playerg = self.game.player.getCoord()
-                if p[3] >= playerg[1] and (p[2] >= playerg[0] or p[2] <= playerg[2]):
+                if p[3] >= playerg[1] and (p[2] >= playerg[0] or p[2] <= playerg[2]): #QUI
                         self.game.canvas.move(self.id, 0, -15)
                         self.game.canvas.move(self.lifelabel.id, 0, -15)
                         self.game.canvas.move(self.lifelabel.labid, 0, -15)
