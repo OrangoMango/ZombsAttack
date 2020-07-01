@@ -20,10 +20,21 @@ class Game:
                                 pat.draw()
                         self.tk.update()
                         if random.randint(1, 10000) <= 19:
-                                z = Zombie(self, random.randint(20, 420), -90, 50, 50, tag=self.zombies_number)
+                                zs = self.getZombieSpawn()
+                                z = Zombie(self, zs[0], 50, 50, tag=self.zombies_number, initdirection=zs[1])
                                 self.zombies_number += 1
                                 self.zombies.append(z)
                         time.sleep(0.01)
+        def getZombieSpawn(self):
+                side = random.choice(["n", "s", "e", "w"])
+                if side == "n":
+                        return (random.randint(20, 420), -90), side
+                elif side == "s":
+                        return (random.randint(20, 420), 590), side
+                elif side == "w":
+                        return (-90, random.randint(20, 420)), side
+                elif side == "e":
+                        return (590, random.randint(20, 420)), side
 
 class LifeLabel:
         def __init__(self, game, player, position="bottom"):
@@ -137,36 +148,63 @@ class Player:
                 return pos + [pos[0]+50, pos[1]+50]
 
 class Zombie:
-        def __init__(self, game, x, y, w, h, tag=0):
+        def __init__(self, game, c, w, h, tag=0, initdirection="s"):
                 self.game = game
+                x, y = c[0], c[1]
+                self.dx, self.dy = 0, 1
                 self.life = 100
                 self.tag = tag
-                print(self.tag)
+                self.direction = initdirection
+                print(self.direction)
+                #print(self.tag)
                 self.id = self.game.canvas.create_rectangle(x, y, x+w, y+h, fill="green", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
         def draw(self):
-                self.game.canvas.move(self.id, 0, 1)
-                self.game.canvas.move(self.lifelabel.id, 0, 1)
-                self.game.canvas.move(self.lifelabel.labid, 0, 1)
-                
                 p = self.getCoord()
+                if self.direction == "n":
+                        self.dx, self.dy = 0, 1
+                        statement = p[3] >= 500
+                elif self.direction == "s":
+                        self.dx, self.dy = 0, -1
+                        statement = p[1] <= 0
+                elif self.direction == "w":
+                        self.dx, self.dy = 1, 0
+                        statement = p[2] >= 500
+                elif self.direction == "e":
+                        self.dx, self.dy = -1, 0
+                        statement = p[0] <= 0
+                self.game.canvas.move(self.id, self.dx, self.dy)
+                self.game.canvas.move(self.lifelabel.id, self.dx, self.dy)
+                self.game.canvas.move(self.lifelabel.labid, self.dx, self.dy)
+                
                 playerg = self.game.player.getCoord()
-                if p[3] >= playerg[1] and (p[2] >= playerg[0] or p[2] <= playerg[2]): #QUI
+                
+                ############### CALCULATE COLLISION ###############
+                
+                if ((p[3] >= playerg[1] and p[3] <= playerg[3]) and (p[2] >= playerg[0] and p[2] <= playerg[2])) or  \
+                    ((p[3] >= playerg[1] and p[3] <= playerg[3]) and (p[0] >= playerg[1] and p[0] <= playerg[3])) or \
+                     False or \
+                     False: #QUI
+                
+                ############################################
                         self.game.canvas.move(self.id, 0, -15)
                         self.game.canvas.move(self.lifelabel.id, 0, -15)
                         self.game.canvas.move(self.lifelabel.labid, 0, -15)
                         self.life -= 15
                         self.lifelabel.update()
-                        self.game.player.life -= 10
+                        if not self.game.player.life < 10:
+                                self.game.player.life -= 10
+                        else:
+                                self.game.player.life = 100
                         self.game.player.lifelabel.update()
+                if statement:
+                        self.game.canvas.move(self.id, (-self.dx)*15, (-self.dy)*15)
+                        self.game.canvas.move(self.lifelabel.id, (-self.dx)*15, (-self.dy)*15)
+                        self.game.canvas.move(self.lifelabel.labid, (-self.dx)*15, (-self.dy)*15)
+                        self.life -= 15
+                        self.lifelabel.update()
                 if not p:
                         return
-                if p[3] >= 500:
-                        self.game.canvas.move(self.id, 0, -15)
-                        self.game.canvas.move(self.lifelabel.id, 0, -15)
-                        self.game.canvas.move(self.lifelabel.labid, 0, -15)
-                        self.life -= 15
-                        self.lifelabel.update()
                 if self.life <= 0:
                         self.die()
         def die(self):
@@ -177,7 +215,8 @@ class Zombie:
                                 break
                 self.game.canvas.delete("zombie_{0}".format(self.tag))
                 self.lifelabel.delete()
-                z = Zombie(self.game, random.randint(20, 420), -90, 50, 50, tag=self.game.zombies_number)
+                zs = self.game.getZombieSpawn()
+                z = Zombie(self.game, zs[0], 50, 50, tag=self.game.zombies_number, initdirection=zs[1])
                 self.game.zombies_number += 1
                 self.game.zombies.append(z)
         def getCoord(self):
@@ -236,7 +275,7 @@ if __name__ == "__main__":
         g = Game()
         p = Player(g)
         g.player = p
-        z = Zombie(g, 20, -90, 50, 50, tag=g.zombies_number)
+        z = Zombie(g, (20, -90), 50, 50, tag=g.zombies_number)
         g.zombies_number += 1
         g.zombies.append(z)
         g.mainloop()
