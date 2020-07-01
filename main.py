@@ -158,12 +158,8 @@ class Zombie:
         def draw(self):
                 self.alivetimer += 1
                 if self.alivetimer >= 1000:
-                        self.game.canvas.move(self.id, (-self.dx)*15, (-self.dy)*15)
-                        self.game.canvas.move(self.lifelabel.id, (-self.dx)*15, (-self.dy)*15)
-                        self.game.canvas.move(self.lifelabel.labid, (-self.dx)*15, (-self.dy)*15)
                         self.life -= 15
                         self.lifelabel.update()
-                        return
                 p = self.getCoord()
                 if self.direction == "n":
                         self.dx, self.dy = 0, 1
