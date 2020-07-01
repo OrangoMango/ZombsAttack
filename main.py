@@ -155,7 +155,7 @@ class Zombie:
                 self.life = 100
                 self.tag = tag
                 self.direction = initdirection
-                print(self.direction)
+                #print(self.direction)
                 #print(self.tag)
                 self.id = self.game.canvas.create_rectangle(x, y, x+w, y+h, fill="green", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
@@ -183,13 +183,13 @@ class Zombie:
                 
                 if ((p[3] >= playerg[1] and p[3] <= playerg[3]) and (p[2] >= playerg[0] and p[2] <= playerg[2])) or  \
                     ((p[3] >= playerg[1] and p[3] <= playerg[3]) and (p[0] >= playerg[1] and p[0] <= playerg[3])) or \
-                     False or \
-                     False: #QUI
+                     ((p[1] >= playerg[1] and p[1] <= playerg[3]) and (p[0] >= playerg[0] and p[0] <= playerg[2])) or \
+                     ((p[1] >= playerg[1] and p[1] <= playerg[3]) and (p[2] >= playerg[0] and p[2] <= playerg[2])): #QUI
                 
                 ############################################
-                        self.game.canvas.move(self.id, 0, -15)
-                        self.game.canvas.move(self.lifelabel.id, 0, -15)
-                        self.game.canvas.move(self.lifelabel.labid, 0, -15)
+                        self.game.canvas.move(self.id, (-self.dx)*15, (-self.dy)*15)
+                        self.game.canvas.move(self.lifelabel.id, (-self.dx)*15, (-self.dy)*15)
+                        self.game.canvas.move(self.lifelabel.labid, (-self.dx)*15, (-self.dy)*15)
                         self.life -= 15
                         self.lifelabel.update()
                         if not self.game.player.life < 10:
