@@ -123,11 +123,6 @@ class Player:
                 p = Patron(self.game, self, tag=self.game.p_n)
                 self.game.patrons.append(p)
                 self.game.p_n += 1
-                '''if self.life >= 5:
-                        self.life -= 5
-                else:
-                        self.life = 100
-                self.lifelabel.update()'''
                 #print(self.game.p_n)
         def release(self, event):
                 self.mx, self.my = 0, 0
@@ -159,7 +154,16 @@ class Zombie:
                 #print(self.tag)
                 self.id = self.game.canvas.create_rectangle(x, y, x+w, y+h, fill="green", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
+                self.alivetimer = 0
         def draw(self):
+                self.alivetimer += 1
+                if self.alivetimer >= 1000:
+                        self.game.canvas.move(self.id, (-self.dx)*15, (-self.dy)*15)
+                        self.game.canvas.move(self.lifelabel.id, (-self.dx)*15, (-self.dy)*15)
+                        self.game.canvas.move(self.lifelabel.labid, (-self.dx)*15, (-self.dy)*15)
+                        self.life -= 15
+                        self.lifelabel.update()
+                        return
                 p = self.getCoord()
                 if self.direction == "n":
                         self.dx, self.dy = 0, 1
