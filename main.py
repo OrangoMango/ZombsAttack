@@ -1,13 +1,15 @@
 from tkinter import *
 import time, random
 
+import maps
+
 class Game:
         def __init__(self):
                 self.tk = Tk()
                 self.tk.title("ZombsAttack")
                 self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgray")
-                self.canvas.grid(rowspan=5, column=0, row=0)
-              #  Canvas(self.tk, width=100, height=100, bg="yellow").grid(column=1, row=4)
+                self.canvas.grid(column=0, row=0)
+                self.minimap = maps.MiniMap(self)
                 self.p_n = 0
                 self.patrons = []
                 self.zombies = []
@@ -182,6 +184,7 @@ class Zombie:
                 self.lifelabel = LifeLabel(self.game, self, position="top")
                 self.alivetimer = 0
                 self.fromplayer = False
+                self.minizombie = maps.MiniZombie(self.game.minimap, 100, 100)
         def draw(self):
                 self.alivetimer += 1
                 if self.alivetimer >= 1000:
@@ -201,6 +204,7 @@ class Zombie:
                 elif self.direction == "e":
                         self.dx, self.dy = -1, 0
                         statement = p[0] <= 0
+                self.minizombie.draw(1, 1)#self.dx, self.dy)
                 self.game.canvas.move(self.id, self.dx, self.dy)
                 self.game.canvas.move(self.lifelabel.id, self.dx, self.dy)
                 self.game.canvas.move(self.lifelabel.labid, self.dx, self.dy)
