@@ -163,6 +163,7 @@ class Player:
                         self.game.canvas.move(z.id, self.mx, self.my)
                         self.game.canvas.move(z.lifelabel.id, self.mx, self.my)
                         self.game.canvas.move(z.lifelabel.labid, self.mx, self.my)
+                        z.minizombie.draw(self.mx, self.my)
                 for p in self.game.patrons:
                         self.game.canvas.move(p.id, self.mx, self.my)
                 self.timer -= 1
@@ -184,7 +185,7 @@ class Zombie:
                 self.lifelabel = LifeLabel(self.game, self, position="top")
                 self.alivetimer = 0
                 self.fromplayer = False
-                self.minizombie = maps.MiniZombie(self.game.minimap, 100, 100)
+                self.minizombie = maps.MiniZombie(self.game.minimap, x, y)
         def draw(self):
                 self.alivetimer += 1
                 if self.alivetimer >= 1000:
@@ -204,7 +205,7 @@ class Zombie:
                 elif self.direction == "e":
                         self.dx, self.dy = -1, 0
                         statement = p[0] <= 0
-                self.minizombie.draw(1, 1)#self.dx, self.dy)
+                self.minizombie.draw(self.dx, self.dy)
                 self.game.canvas.move(self.id, self.dx, self.dy)
                 self.game.canvas.move(self.lifelabel.id, self.dx, self.dy)
                 self.game.canvas.move(self.lifelabel.labid, self.dx, self.dy)
