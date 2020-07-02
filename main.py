@@ -6,10 +6,13 @@ class Game:
                 self.tk = Tk()
                 self.tk.title("ZombsAttack")
                 self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgray")
-                self.canvas.pack()
+                self.canvas.grid(rowspan=5, column=0, row=0)
+              #  Canvas(self.tk, width=100, height=100, bg="yellow").grid(column=1, row=4)
                 self.p_n = 0
                 self.patrons = []
                 self.zombies = []
+                self.ftexts = []
+                self.ftextsn = 0
                 self.zombies_number = 0
         def mainloop(self):
                 while True:
@@ -18,6 +21,8 @@ class Game:
                                 zombie.draw()
                         for pat in self.patrons:
                                 pat.draw()
+                        for ftext in self.ftexts:
+                                ftext.draw()
                         self.tk.update()
                         if random.randint(1, 10000) <= 19:
                                 zs = self.getZombieSpawn()
@@ -35,6 +40,26 @@ class Game:
                         return (-90, random.randint(20, 420)), side
                 elif side == "e":
                         return (590, random.randint(20, 420)), side
+
+class FlowingText:
+        def __init__(self, game, x, y, text="FlowingText - Class", tag=0):
+                self.game = game
+                self.text = text
+                self.tag = tag
+                self.id_x = self.game.canvas.create_text(x, y, text=self.text, font="Calibri 10 bold", tags="ftext#{0}".format(tag))
+                self.id = "ftext#{0}".format(tag)
+        def draw(self):
+                self.game.canvas.move(self.id, 0, -2)
+                p = self.game.canvas.coords(self.id)
+                if p[1] <= 0:
+                        self.delete()
+        def delete(self):
+                self.game.canvas.delete(self.id)
+                for ft in self.game.ftexts:
+                        if ft.tag == self.tag:
+                                self.game.ftexts.remove(ft)
+                                break
+                
 
 class LifeLabel:
         def __init__(self, game, player, position="bottom"):
@@ -97,6 +122,7 @@ class Player:
                 self.timer = 0
                 self.direction = "n"
                 self.mx, self.my = 0, 0
+                self.kills = 0
                 self.lifelabel = LifeLabel(self.game, self)
         def press(self, event):
                 if event.char == "d":
@@ -155,10 +181,12 @@ class Zombie:
                 self.id = self.game.canvas.create_rectangle(x, y, x+w, y+h, fill="green", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
                 self.alivetimer = 0
+                self.fromplayer = False
         def draw(self):
                 self.alivetimer += 1
                 if self.alivetimer >= 1000:
                         self.life -= 15
+                        self.alivetimer = 990
                         self.lifelabel.update()
                 p = self.getCoord()
                 if self.direction == "n":
@@ -203,16 +231,24 @@ class Zombie:
                         self.lifelabel.update()
                 if not p:
                         return
+                
                 if self.life <= 0:
-                        self.die()
-        def die(self):
+                        self.die(self.fromplayer)
+        def die(self, from_player=False):
                 for i in self.game.zombies:
                         if i.tag == self.tag:
                                 self.game.zombies.remove(i)
                                 #print(len(self.game.zombies))
                                 break
+                p = self.getCoord()
                 self.game.canvas.delete("zombie_{0}".format(self.tag))
                 self.lifelabel.delete()
+                if from_player:
+                        self.game.player.kills += 1
+                        print(self.game.player.kills)
+                        f = FlowingText(self.game, p[0]+(p[2]-p[0]), p[1]+(p[3]-p[1]), text="+1 Kill", tag=self.game.ftextsn)
+                        self.game.ftextsn += 1
+                        self.game.ftexts.append(f)
                 zs = self.game.getZombieSpawn()
                 z = Zombie(self.game, zs[0], 50, 50, tag=self.game.zombies_number, initdirection=zs[1])
                 self.game.zombies_number += 1
@@ -259,6 +295,8 @@ class Patron:
                                        zombie.life -= 15
                                        zombie.lifelabel.update()
                                        self.delete()
+                                       if zombie.life <= 0:
+                                                zombie.fromplayer = True
                                        break
                 self.game.canvas.move(self.id, self.xd, self.yd)
                 #print(self.game.patrons)
