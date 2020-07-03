@@ -1,15 +1,16 @@
 from tkinter import *
 import time, random
 
-import maps
+import maps, gstat
 
 class Game:
         def __init__(self):
                 self.tk = Tk()
                 self.tk.title("ZombsAttack")
                 self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgray")
-                self.canvas.grid(column=0, row=0)
+                self.canvas.grid(rowspan=2, column=0, row=0)
                 self.minimap = maps.MiniMap(self)
+                self.gamestats = gstat.Statistics(self)
                 self.p_n = 0
                 self.patrons = []
                 self.zombies = []
@@ -26,7 +27,7 @@ class Game:
                         for ftext in self.ftexts:
                                 ftext.draw()
                         self.tk.update()
-                        if random.randint(1, 10000) <= 19:
+                        if random.randint(1, 10000) <= 13:
                                 zs = self.getZombieSpawn()
                                 z = Zombie(self, zs[0], 50, 50, tag=self.zombies_number, initdirection=zs[1])
                                 self.zombies_number += 1
@@ -174,7 +175,8 @@ class Player:
 class Zombie:
         def __init__(self, game, c, w, h, tag=0, initdirection="s"):
                 self.game = game
-                x, y = c[0], c[1]
+                self.sta = random.choice(["stax", "stay"])
+                x, y = c
                 self.dx, self.dy = 0, 1
                 self.life = 100
                 self.tag = tag
@@ -188,9 +190,10 @@ class Zombie:
                 self.minizombie = maps.MiniZombie(self.game.minimap, x, y)
         def draw(self):
                 self.alivetimer += 1
-                if self.alivetimer >= 1000:
+                self.direction = self.getPlayerDTrack()
+                if self.alivetimer >= 1500:
                         self.life -= 15
-                        self.alivetimer = 990
+                        self.alivetimer = 1490
                         self.lifelabel.update()
                 p = self.getCoord()
                 if self.direction == "n":
@@ -199,12 +202,14 @@ class Zombie:
                 elif self.direction == "s":
                         self.dx, self.dy = 0, -1
                         statement = p[1] <= 0
-                elif self.direction == "w":
+                elif self.direction == "e":
                         self.dx, self.dy = 1, 0
                         statement = p[2] >= 500
-                elif self.direction == "e":
+                elif self.direction == "w":
                         self.dx, self.dy = -1, 0
                         statement = p[0] <= 0
+                else:
+                        print(self.direction)
                 self.minizombie.draw(self.dx, self.dy)
                 self.game.canvas.move(self.id, self.dx, self.dy)
                 self.game.canvas.move(self.lifelabel.id, self.dx, self.dy)
@@ -247,11 +252,13 @@ class Zombie:
                                 break
                 p = self.getCoord()
                 self.game.canvas.delete("zombie_{0}".format(self.tag))
+                self.minizombie.delete()
                 self.lifelabel.delete()
                 if from_player:
                         self.game.player.kills += 1
-                        print(self.game.player.kills)
-                        f = FlowingText(self.game, p[0]+(p[2]-p[0]), p[1]+(p[3]-p[1]), text="+1 Kill", tag=self.game.ftextsn)
+                        self.game.gamestats.labels[0]["text"] = "Kills: {0}".format(self.game.player.kills)
+                        #print(self.game.player.kills)
+                        f = FlowingText(self.game, p[0]+(p[2]-p[0])/2, p[1]+(p[3]-p[1])/2, text="+1 Kill", tag=self.game.ftextsn)
                         self.game.ftextsn += 1
                         self.game.ftexts.append(f)
                 zs = self.game.getZombieSpawn()
@@ -260,6 +267,46 @@ class Zombie:
                 self.game.zombies.append(z)
         def getCoord(self):
                 return self.game.canvas.coords(self.id)
+        def getPlayerDTrack(self):
+                player = self.game.player
+                p = player.getCoord()
+                zp = self.game.canvas.coords(self.id)
+                centerp, centerzp = (p[0]+(p[2]-p[0])/2, p[1]+(p[3]-p[1])/2), (zp[0]+(zp[2]-zp[0])/2, zp[1]+(zp[3]-zp[1])/2)
+                #print(p, zp, centerp, centerzp)
+                
+                stax = centerzp[0] <= centerp[0]
+                stax2 = centerp[0] == centerzp[0]
+                
+                stay = centerp[1] <= centerzp[1]
+                stay2 = centerp[1] == centerzp[1]
+                
+                statement = self.sta
+                
+                if eval(statement):
+                        direction = "e"
+                        if eval(statement+"2"):
+                                if eval("stay" if self.sta == "stax" else "stay"):
+                                        direction = "s"
+                                        if eval("stay"+"2" if self.sta == "stax" else "stay"+"2"):
+                                                direction = None
+                                else:
+                                        direction = "n"
+                        else:
+                                pass
+                else:
+                        direction = "w"
+                        if eval(statement+"2"):
+                                if eval("stay" if self.sta == "stax" else "stay"):
+                                        direction = "s"
+                                        if eval("stay"+"2" if self.sta == "stax" else "stay"+"2"):
+                                                direction = None
+                                else:
+                                        direction = "n"
+                        else:
+                                pass
+               # print(direction)
+               # time.sleep(0.05)
+                return direction
 
 class Patron:
         def __init__(self, game, player, tag=0):
@@ -320,7 +367,7 @@ if __name__ == "__main__":
         g.zombies_number += 1
         g.zombies.append(z)
         g.mainloop()
-       # try:
-        #         g.mainloop()
-       # except Exception as e:
-         #      print("Program end %s" % e)
+        #try:
+        #        g.mainloop()
+        #except Exception as e:
+        #        print("Program end %s" % e)
