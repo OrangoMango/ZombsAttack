@@ -6,7 +6,6 @@ class MiniZombie:
                 self.minimap = minimap
                 self.id = self.minimap.canvas.create_oval(x, y, x+50/5, y+50/5, fill="green")
         def draw(self, x, y):
-                #nx, ny = int(x/5) if x != 1 else int(x/5), int(y/5) if y != 1 else int(y/5)
                 self.minimap.canvas.move(self.id, x/5, y/5)
         def delete(self):
                 self.minimap.canvas.delete(self.id)
