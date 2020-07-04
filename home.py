@@ -12,7 +12,6 @@ class PlayButton:
         def __init__(self, window):
                 self.window = window
                 self.id = self.window.canvas.create_rectangle(100, 100, 200, 150, fill="red")
-                
 
 
 class Window:
@@ -23,6 +22,7 @@ class Window:
                 self.canvas.pack()
                 self.playbutton = PlayButton(self)
                 self.helpbutton = HelpButton(self)
+                import profiles; profiles.Profile(self)
                 self.canvas.tag_bind(self.playbutton.id, "<Button-1>", self.start)
                 self.canvas.tag_bind(self.helpbutton.id, "<Button-1>", self.helpbutton.click)
                 self.go = False
