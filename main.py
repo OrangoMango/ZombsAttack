@@ -1,10 +1,12 @@
 from tkinter import *
 import time, random
 
-import maps, gstat
+import maps, gstat, home
 
 class Game:
         def __init__(self):
+                self.homewindow = home.Window()
+                self.homewindow.wait()
                 self.tk = Tk()
                 self.tk.title("ZombsAttack")
                 self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgray")
@@ -12,6 +14,7 @@ class Game:
                 self.minimap = maps.MiniMap(self)
                 self.gamestats = gstat.Statistics(self)
                 self.p_n = 0
+                self.name = "OrangoMango"
                 self.patrons = []
                 self.zombies = []
                 self.ftexts = []
@@ -27,7 +30,7 @@ class Game:
                         for ftext in self.ftexts:
                                 ftext.draw()
                         self.tk.update()
-                        if random.randint(1, 10000) <= 13:
+                        if random.randint(1, 10000) <= 15:
                                 zs = self.getZombieSpawn()
                                 z = Zombie(self, zs[0], 50, 50, tag=self.zombies_number, initdirection=zs[1])
                                 self.zombies_number += 1
@@ -118,7 +121,10 @@ class Player:
         def __init__(self, game):
                 self.game = game
                 self.image = PhotoImage(file="Player.gif")
-                self.id = self.game.canvas.create_image(200, 200, image=self.image, anchor="nw")
+                self.name = self.game.name
+                self.id_x = self.game.canvas.create_image(200, 200, image=self.image, anchor="nw", tags="Player")
+                self.id_y = self.game.canvas.create_text(225, 190, text=self.name, tags="Player")
+                self.id = "Player"
                 self.game.tk.bind("<KeyPress>", self.press)
                 self.game.tk.bind("<KeyRelease>", self.release)
                 self.life = 100
@@ -126,6 +132,7 @@ class Player:
                 self.direction = "n"
                 self.mx, self.my = 0, 0
                 self.kills = 0
+                self.damage = 0
                 self.lifelabel = LifeLabel(self.game, self)
         def press(self, event):
                 if event.char == "d":
@@ -175,8 +182,8 @@ class Player:
 class Zombie:
         def __init__(self, game, c, w, h, tag=0, initdirection="s"):
                 self.game = game
-                self.sta = random.choice(["stax", "stay"])
                 x, y = c
+                self.selection = random.choice(["stay", "stax"])
                 self.dx, self.dy = 0, 1
                 self.life = 100
                 self.tag = tag
@@ -226,6 +233,7 @@ class Zombie:
                 
                 ############################################
                         self.game.canvas.move(self.id, (-self.dx)*15, (-self.dy)*15)
+                        self.minizombie.draw((-self.dx)*15, (-self.dy)*15)
                         self.game.canvas.move(self.lifelabel.id, (-self.dx)*15, (-self.dy)*15)
                         self.game.canvas.move(self.lifelabel.labid, (-self.dx)*15, (-self.dy)*15)
                         if not self.game.player.life < 10:
@@ -280,15 +288,27 @@ class Zombie:
                 stay = centerp[1] <= centerzp[1]
                 stay2 = centerp[1] == centerzp[1]
                 
-                statement = self.sta
+                
+                def reversedir():
+                        d = self.direction
+                        if d == "n":
+                                return "s"
+                        elif d == "s":
+                                return "n"
+                        elif d == "w":
+                                return "e"
+                        elif d == "e":
+                                return "w"
+                
+                statement = self.selection
                 
                 if eval(statement):
                         direction = "e"
                         if eval(statement+"2"):
-                                if eval("stay" if self.sta == "stax" else "stay"):
+                                if eval("stay" if self.selection == "stax" else "stay"):
                                         direction = "s"
-                                        if eval("stay"+"2" if self.sta == "stax" else "stay"+"2"):
-                                                direction = None
+                                        if eval("stay"+"2" if self.selection == "stax" else "stay"+"2"):
+                                                direction = reversedir()
                                 else:
                                         direction = "n"
                         else:
@@ -296,10 +316,10 @@ class Zombie:
                 else:
                         direction = "w"
                         if eval(statement+"2"):
-                                if eval("stay" if self.sta == "stax" else "stay"):
+                                if eval("stay" if self.selection == "stax" else "stay"):
                                         direction = "s"
-                                        if eval("stay"+"2" if self.sta == "stax" else "stay"+"2"):
-                                                direction = None
+                                        if eval("stay"+"2" if self.selection == "stax" else "stay"+"2"):
+                                                direction = reversedir()
                                 else:
                                         direction = "n"
                         else:
@@ -345,6 +365,8 @@ class Patron:
                        if pos[1] >= z_pos[1] and pos[1] <= z_pos[3]:
                                if pos[0] >= z_pos[0] and pos[0] <= z_pos[2]:
                                        zombie.life -= 15
+                                       self.player.damage += 15
+                                       self.game.gamestats.labels[1]["text"] = "Damage: {0}".format(self.player.damage)
                                        zombie.lifelabel.update()
                                        self.delete()
                                        if zombie.life <= 0:
