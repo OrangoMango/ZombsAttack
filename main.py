@@ -126,7 +126,7 @@ class LifeLabel:
 class Player:
         def __init__(self, game):
                 self.game = game
-                self.images = [PhotoImage(file="Player.gif"), PhotoImage(file="Player_W.gif"), PhotoImage(file="Player_E.gif")]
+                self.images = [PhotoImage(file="Player.gif"), PhotoImage(file="Player_N.gif"), PhotoImage(file="Player_W.gif"), PhotoImage(file="Player_E.gif")]
                 self.name = self.game.name
                 self.id_x = self.game.canvas.create_image(200, 200, image=self.images[0], anchor="nw", tags="Player")
                 self.id_y = self.game.canvas.create_text(225, 190, text=self.name, tags="Player")
@@ -145,15 +145,16 @@ class Player:
                         #self.x = 3
                         self.mx, self.my = -3, 0
                         self.direction = "e"
-                        self.game.canvas.itemconfig(self.id_x, image=self.images[2])
+                        self.game.canvas.itemconfig(self.id_x, image=self.images[3])
                 elif event.char == "a":
                         #self.x = -3
                         self.mx, self.my = 3, 0
                         self.direction = "w"
-                        self.game.canvas.itemconfig(self.id_x, image=self.images[1])
+                        self.game.canvas.itemconfig(self.id_x, image=self.images[2])
                 elif event.char == "w":
                         self.mx, self.my = 0, 3
                         self.direction = "n"
+                        self.game.canvas.itemconfig(self.id_x, image=self.images[1])
                 elif event.char == "s":
                         self.mx, self.my = 0, -3
                         self.direction = "s"
