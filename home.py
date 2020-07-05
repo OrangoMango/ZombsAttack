@@ -30,6 +30,6 @@ class Window:
                 self.tk.destroy()
                 self.go = True
         def wait(self):
-                while not self.go:
-                        self.tk.update()
-                        time.sleep(0.01)
+                self.tk.mainloop()
+                if self.go:
+                        self.tk.quit()

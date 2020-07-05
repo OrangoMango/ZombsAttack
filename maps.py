@@ -16,5 +16,7 @@ class MiniMap:
                 self.frac = 7
                 self.canvas = Canvas(self.game.tk, width=100, height=100, bg="white")
                 self.canvas.grid(column=1, row=0)
+                self.background = PhotoImage(file="Minimap.gif")
+                self.bg = self.canvas.create_image(0, 0, image=self.background, anchor="nw")
                 self.playersign = self.canvas.create_oval(200/self.frac, 200/self.frac, 200/self.frac+50/self.frac, 200/self.frac+50/self.frac, fill="red")
                 # MiniZombie(self, 100, 100).draw(1, 1)

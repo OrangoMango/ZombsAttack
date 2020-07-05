@@ -1,16 +1,19 @@
 from tkinter import *
+from tkinter import messagebox
 import time, random
 
 import maps, gstat, home
 
 class Game:
         def __init__(self):
-                self.homewindow = home.Window()
-                self.homewindow.wait()
+                #self.homewindow = home.Window()
+                #self.homewindow.wait()
                 self.tk = Tk()
                 self.tk.title("ZombsAttack")
                 self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgray")
                 self.canvas.grid(rowspan=2, column=0, row=0)
+                self.background = PhotoImage(file="Map.gif")
+                self.bg = self.canvas.create_image(0, 0, image=self.background, anchor="nw")
                 self.minimap = maps.MiniMap(self)
                 self.gamestats = gstat.Statistics(self)
                 self.p_n = 0
@@ -46,6 +49,9 @@ class Game:
                         return (-90, random.randint(20, 420)), side
                 elif side == "e":
                         return (590, random.randint(20, 420)), side
+        def gameover(self):
+                messagebox.showerror("Game over", "GAME OVER")
+                self.tk.destroy()
 
 class FlowingText:
         def __init__(self, game, x, y, text="FlowingText - Class", tag=0):
@@ -120,9 +126,9 @@ class LifeLabel:
 class Player:
         def __init__(self, game):
                 self.game = game
-                self.image = PhotoImage(file="Player.gif")
+                self.images = [PhotoImage(file="Player.gif"), PhotoImage(file="Player_W.gif"), PhotoImage(file="Player_E.gif")]
                 self.name = self.game.name
-                self.id_x = self.game.canvas.create_image(200, 200, image=self.image, anchor="nw", tags="Player")
+                self.id_x = self.game.canvas.create_image(200, 200, image=self.images[0], anchor="nw", tags="Player")
                 self.id_y = self.game.canvas.create_text(225, 190, text=self.name, tags="Player")
                 self.id = "Player"
                 self.game.tk.bind("<KeyPress>", self.press)
@@ -139,16 +145,19 @@ class Player:
                         #self.x = 3
                         self.mx, self.my = -3, 0
                         self.direction = "e"
+                        self.game.canvas.itemconfig(self.id_x, image=self.images[2])
                 elif event.char == "a":
                         #self.x = -3
                         self.mx, self.my = 3, 0
                         self.direction = "w"
+                        self.game.canvas.itemconfig(self.id_x, image=self.images[1])
                 elif event.char == "w":
                         self.mx, self.my = 0, 3
                         self.direction = "n"
                 elif event.char == "s":
                         self.mx, self.my = 0, -3
                         self.direction = "s"
+                        self.game.canvas.itemconfig(self.id_x, image=self.images[0])
                 elif event.keysym == "space":
                         if self.timer < 0:
                                 self.shoot()
@@ -167,6 +176,8 @@ class Player:
                 self.game.canvas.move(self.lifelabel.id, self.x, self.y)
                 self.game.canvas.move(self.lifelabel.labid, self.x, self.y)'''
                 #print(self.direction)
+                self.game.canvas.move(self.game.bg, self.mx, self.my)
+                self.game.minimap.canvas.move(self.game.minimap.bg, self.mx/self.game.minimap.frac, self.my/self.game.minimap.frac)
                 for z in self.game.zombies:
                         self.game.canvas.move(z.id, self.mx, self.my)
                         self.game.canvas.move(z.lifelabel.id, self.mx, self.my)
@@ -239,7 +250,7 @@ class Zombie:
                         if not self.game.player.life < 10:
                                 self.game.player.life -= 10
                         else:
-                                self.game.player.life = 100
+                                self.game.gameover()
                         self.game.player.lifelabel.update()
                 if statement:
                         self.game.canvas.move(self.id, (-self.dx)*15, (-self.dy)*15)
@@ -388,8 +399,8 @@ if __name__ == "__main__":
         z = Zombie(g, (20, -90), 50, 50, tag=g.zombies_number)
         g.zombies_number += 1
         g.zombies.append(z)
-        g.mainloop()
-        #try:
-        #        g.mainloop()
-        #except Exception as e:
-        #        print("Program end %s" % e)
+        #g.mainloop()
+        try:
+                g.mainloop()
+        except Exception as e:
+                print("Program end %s" % e)
