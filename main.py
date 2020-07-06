@@ -6,13 +6,14 @@ import maps, gstat, home
 
 class Game:
         def __init__(self):
-                #self.homewindow = home.Window()
-                #self.homewindow.wait()
+                self.homewindow = home.Window()
+                self.homewindow.wait()
+                self.homewindow.tk.destroy()
                 self.tk = Tk()
                 self.tk.title("ZombsAttack")
                 self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgray")
                 self.canvas.grid(rowspan=2, column=0, row=0)
-                self.background = PhotoImage(file="Map.gif")
+                self.background = PhotoImage(file="Data/Images/Map.gif")
                 self.bg = self.canvas.create_image(0, 0, image=self.background, anchor="nw")
                 self.minimap = maps.MiniMap(self)
                 self.gamestats = gstat.Statistics(self)
@@ -126,7 +127,7 @@ class LifeLabel:
 class Player:
         def __init__(self, game):
                 self.game = game
-                self.images = [PhotoImage(file="Player.gif"), PhotoImage(file="Player_N.gif"), PhotoImage(file="Player_W.gif"), PhotoImage(file="Player_E.gif")]
+                self.images = [PhotoImage(file="Data/Images/Player.gif"), PhotoImage(file="Data/Images/Player_N.gif"), PhotoImage(file="Data/Images/Player_W.gif"), PhotoImage(file="Data/Images/Player_E.gif")]
                 self.name = self.game.name
                 self.id_x = self.game.canvas.create_image(200, 200, image=self.images[0], anchor="nw", tags="Player")
                 self.id_y = self.game.canvas.create_text(225, 190, text=self.name, tags="Player")
