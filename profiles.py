@@ -13,7 +13,7 @@ class Profile:
                 self.name = "Guest"
         def show_gui(self):
                 self.id = self.home.canvas.create_text(400, 10, text=self.name)
-                self.troph_id = self.home.canvas.create_text(30, 10, text="0")
+                self.troph_id = self.home.canvas.create_text(30, 10, text=self.data["Trophies"])
         def ask_name(self):
                 self.name = s.askstring("Enter name", "Enter name:")
         def create_profile_data(self):
