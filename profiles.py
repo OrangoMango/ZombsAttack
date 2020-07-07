@@ -11,6 +11,7 @@ class Profile:
                 self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/"
                 os.chdir(self.path)
                 self.name = "Guest"
+                self.data = {"Trophies" : 0}
         def show_gui(self):
                 self.id = self.home.canvas.create_text(400, 10, text=self.name)
                 self.troph_id = self.home.canvas.create_text(30, 10, text=self.data["Trophies"])
