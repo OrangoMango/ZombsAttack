@@ -11,6 +11,7 @@ class Game:
                 self.homewindow.tk.destroy()
                 self.tk = Tk()
                 self.tk.title("ZombsAttack")
+                self.tk.resizable(0, 0)
                 self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgray")
                 self.canvas.grid(rowspan=2, column=0, row=0)
                 self.background = PhotoImage(file="Data/Images/Map.gif")
@@ -18,7 +19,7 @@ class Game:
                 self.minimap = maps.MiniMap(self)
                 self.gamestats = gstat.Statistics(self)
                 self.p_n = 0
-                self.name = "OrangoMango"
+                self.name = self.homewindow.profile.name
                 self.patrons = []
                 self.zombies = []
                 self.ftexts = []
@@ -51,7 +52,20 @@ class Game:
                 elif side == "e":
                         return (590, random.randint(20, 420)), side
         def gameover(self):
-                messagebox.showerror("Game over", "GAME OVER")
+                k, d = self.player.kills, self.player.damage
+                
+                l = [0, 0]
+                
+                
+                for i in range(k):
+                        l[0] += 0.3
+                for i in range(d):
+                        l[1] += 0.04
+                        
+                #print(k, d, l)
+                trophies = int(sum(l))
+                
+                messagebox.showerror("Game over", "GAME OVER ._. +{0} Trophies".format(trophies))
                 self.tk.destroy()
 
 class FlowingText:
@@ -185,8 +199,6 @@ class Player:
                         self.game.canvas.move(z.lifelabel.id, self.mx, self.my)
                         self.game.canvas.move(z.lifelabel.labid, self.mx, self.my)
                         z.minizombie.draw(self.mx, self.my)
-                for p in self.game.patrons:
-                        self.game.canvas.move(p.id, self.mx, self.my)
                 self.timer -= 1
         def getCoord(self):
                 pos = self.game.canvas.coords(self.id)
@@ -339,6 +351,12 @@ class Zombie:
                                 pass
                # print(direction)
                # time.sleep(0.05)
+               
+               
+               
+
+               
+               
                 return direction
 
 class Patron:
