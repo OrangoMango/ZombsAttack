@@ -14,7 +14,7 @@ class Game:
                 self.tk.resizable(0, 0)
                 self.canvas = Canvas(self.tk, width=500, height=500, bg="lightgray")
                 self.canvas.grid(rowspan=2, column=0, row=0)
-                self.background = PhotoImage(file="Data/Images/Map.gif")
+                self.background = PhotoImage(file="Data/Images/Map.gif") #Load map image
                 self.bg = self.canvas.create_image(0, 0, image=self.background, anchor="nw")
                 self.minimap = maps.MiniMap(self)
                 self.gamestats = gstat.Statistics(self)
@@ -62,11 +62,19 @@ class Game:
                 for i in range(d):
                         l[1] += 0.04
                         
-                #print(k, d, l)
                 trophies = int(sum(l))
+
+                self.homewindow.profile.data["Trophies"] += trophies #Add throphies
+                self.homewindow.profile.save_saves()                 #Save trophies
                 
                 messagebox.showerror("Game over", "GAME OVER ._. +{0} Trophies".format(trophies))
-                self.tk.destroy()
+                ask = messagebox.askyesno("Replay", "Do you want to play another time?")
+                if ask:
+                        self.tk.destroy()
+                        main()
+                        return
+                else:
+                    self.tk.destroy()
 
 class FlowingText:
         def __init__(self, game, x, y, text="FlowingText - Class", tag=0):
@@ -157,12 +165,10 @@ class Player:
                 self.lifelabel = LifeLabel(self.game, self)
         def press(self, event):
                 if event.char == "d":
-                        #self.x = 3
                         self.mx, self.my = -3, 0
                         self.direction = "e"
                         self.game.canvas.itemconfig(self.id_x, image=self.images[3])
                 elif event.char == "a":
-                        #self.x = -3
                         self.mx, self.my = 3, 0
                         self.direction = "w"
                         self.game.canvas.itemconfig(self.id_x, image=self.images[2])
@@ -184,14 +190,9 @@ class Player:
                 p = Patron(self.game, self, tag=self.game.p_n)
                 self.game.patrons.append(p)
                 self.game.p_n += 1
-                #print(self.game.p_n)
         def release(self, event):
                 self.mx, self.my = 0, 0
         def draw(self):
-                '''self.game.canvas.move(self.id, self.x, self.y)
-                self.game.canvas.move(self.lifelabel.id, self.x, self.y)
-                self.game.canvas.move(self.lifelabel.labid, self.x, self.y)'''
-                #print(self.direction)
                 self.game.canvas.move(self.game.bg, self.mx, self.my)
                 self.game.minimap.canvas.move(self.game.minimap.bg, self.mx/self.game.minimap.frac, self.my/self.game.minimap.frac)
                 for z in self.game.zombies:
@@ -213,8 +214,6 @@ class Zombie:
                 self.life = 100
                 self.tag = tag
                 self.direction = initdirection
-                #print(self.direction)
-                #print(self.tag)
                 self.id = self.game.canvas.create_rectangle(x, y, x+w, y+h, fill="green", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
                 self.alivetimer = 0
@@ -256,7 +255,7 @@ class Zombie:
                      ((p[1] >= playerg[1] and p[1] <= playerg[3]) and (p[0] >= playerg[0] and p[0] <= playerg[2])) or \
                      ((p[1] >= playerg[1] and p[1] <= playerg[3]) and (p[2] >= playerg[0] and p[2] <= playerg[2])): #QUI
                 
-                ############################################
+                ###################################################
                         self.game.canvas.move(self.id, (-self.dx)*15, (-self.dy)*15)
                         self.minizombie.draw((-self.dx)*15, (-self.dy)*15)
                         self.game.canvas.move(self.lifelabel.id, (-self.dx)*15, (-self.dy)*15)
@@ -281,7 +280,6 @@ class Zombie:
                 for i in self.game.zombies:
                         if i.tag == self.tag:
                                 self.game.zombies.remove(i)
-                                #print(len(self.game.zombies))
                                 break
                 p = self.getCoord()
                 self.game.canvas.delete("zombie_{0}".format(self.tag))
@@ -290,7 +288,6 @@ class Zombie:
                 if from_player:
                         self.game.player.kills += 1
                         self.game.gamestats.labels[0]["text"] = "Kills: {0}".format(self.game.player.kills)
-                        #print(self.game.player.kills)
                         f = FlowingText(self.game, p[0]+(p[2]-p[0])/2, p[1]+(p[3]-p[1])/2, text="+1 Kill", tag=self.game.ftextsn)
                         self.game.ftextsn += 1
                         self.game.ftexts.append(f)
@@ -305,7 +302,6 @@ class Zombie:
                 p = player.getCoord()
                 zp = self.game.canvas.coords(self.id)
                 centerp, centerzp = (p[0]+(p[2]-p[0])/2, p[1]+(p[3]-p[1])/2), (zp[0]+(zp[2]-zp[0])/2, zp[1]+(zp[3]-zp[1])/2)
-                #print(p, zp, centerp, centerzp)
                 
                 stax = centerzp[0] <= centerp[0]
                 stax2 = centerp[0] == centerzp[0]
@@ -349,14 +345,7 @@ class Zombie:
                                         direction = "n"
                         else:
                                 pass
-               # print(direction)
-               # time.sleep(0.05)
-               
-               
-               
-
-               
-               
+                            
                 return direction
 
 class Patron:
@@ -392,7 +381,6 @@ class Patron:
                        z_pos = zombie.getCoord()
                        if not z_pos:
                                 continue
-                       #print(pos, z_pos)
                        if pos[1] >= z_pos[1] and pos[1] <= z_pos[3]:
                                if pos[0] >= z_pos[0] and pos[0] <= z_pos[2]:
                                        zombie.life -= 15
@@ -404,7 +392,6 @@ class Patron:
                                                 zombie.fromplayer = True
                                        break
                 self.game.canvas.move(self.id, self.xd, self.yd)
-                #print(self.game.patrons)
         def delete(self):
                 for i in self.game.patrons:
                         if i.tag == self.tag:
@@ -412,7 +399,9 @@ class Patron:
                                 break
                 self.game.canvas.delete("patron_{0}".format(self.tag))
 
-if __name__ == "__main__":
+def main():
+        global g, p, z
+    
         g = Game()
         p = Player(g)
         g.player = p
@@ -424,3 +413,7 @@ if __name__ == "__main__":
                 g.mainloop()
         except Exception as e:
                 print("Program end %s" % e)
+
+
+if __name__ == "__main__":
+    main()
