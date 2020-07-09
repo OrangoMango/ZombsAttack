@@ -13,7 +13,8 @@ class HelpButton:
 class PlayButton:
         def __init__(self, window):
                 self.window = window
-                self.id = self.window.canvas.create_rectangle(100, 100, 200, 150, fill="red")
+                self.image = PhotoImage(file="Data/Images/PlayButton.gif")
+                self.id = self.window.canvas.create_image(100, 100, anchor="nw", image=self.image)
 
 
 class Window:

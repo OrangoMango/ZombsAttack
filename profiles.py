@@ -67,7 +67,7 @@ class Profile:
                                 os.mkdir("Data")
                                 if not os.path.exists("Data/Images"):
                                         os.mkdir("Data/Images")
-                                img = ["Map", "Minimap", "Player", "Player_E", "Player_N", "Player_W", "Zombie_1"]
+                                img = ["Map", "Minimap", "Player", "Player_E", "Player_N", "Player_W", "Zombie_1", "PlayButton"]
                                 for image in img:
                                         r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Images/{0}.gif".format(image))
                                         done += 1

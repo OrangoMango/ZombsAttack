@@ -215,7 +215,7 @@ class Zombie:
                 self.tag = tag
                 self.direction = initdirection
                 self.image = PhotoImage(file="Data/Images/Zombie_1.gif")
-                self.id = self.game.canvas.create_image(x, y, image=self.image, tags="zombie_{0}".format(self.tag))
+                self.id = self.game.canvas.create_image(x, y, image=self.image, anchor="nw", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
                 self.alivetimer = 0
                 self.fromplayer = False
