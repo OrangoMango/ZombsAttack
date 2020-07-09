@@ -214,7 +214,8 @@ class Zombie:
                 self.life = 100
                 self.tag = tag
                 self.direction = initdirection
-                self.id = self.game.canvas.create_rectangle(x, y, x+w, y+h, fill="green", tags="zombie_{0}".format(self.tag))
+                self.image = PhotoImage(file="Data/Images/Zombie_1.gif")
+                self.id = self.game.canvas.create_image(x, y, image=self.image, tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
                 self.alivetimer = 0
                 self.fromplayer = False
@@ -296,11 +297,12 @@ class Zombie:
                 self.game.zombies_number += 1
                 self.game.zombies.append(z)
         def getCoord(self):
-                return self.game.canvas.coords(self.id)
+                pos = self.game.canvas.coords(self.id)
+                return pos+[pos[0]+50, pos[1]+50]
         def getPlayerDTrack(self):
                 player = self.game.player
                 p = player.getCoord()
-                zp = self.game.canvas.coords(self.id)
+                zp = self.getCoord()
                 centerp, centerzp = (p[0]+(p[2]-p[0])/2, p[1]+(p[3]-p[1])/2), (zp[0]+(zp[2]-zp[0])/2, zp[1]+(zp[3]-zp[1])/2)
                 
                 stax = centerzp[0] <= centerp[0]
@@ -408,11 +410,11 @@ def main():
         z = Zombie(g, (20, -90), 50, 50, tag=g.zombies_number)
         g.zombies_number += 1
         g.zombies.append(z)
-        #g.mainloop()
-        try:
-                g.mainloop()
-        except Exception as e:
-                print("Program end %s" % e)
+        g.mainloop()
+        #try:
+        #        g.mainloop()
+        #except Exception as e:
+        #        print("Program end %s" % e)
 
 
 if __name__ == "__main__":

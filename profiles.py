@@ -7,10 +7,10 @@ import os, requests, json, platform
 class Profile:
         def __init__(self, home):
                 self.home = home
-                self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/" #This line must be changed
+                #self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/" #This line must be changed
 
                 #print(platform.system()) #To know platform ('Linux' or 'Windows')
-                
+                self.path = "C:/Users/bambini/"
                 os.chdir(self.path)
                 self.name = "Guest"
                 self.data = {"Trophies" : 0}
@@ -67,7 +67,7 @@ class Profile:
                                 os.mkdir("Data")
                                 if not os.path.exists("Data/Images"):
                                         os.mkdir("Data/Images")
-                                img = ["Map", "Minimap", "Player", "Player_E", "Player_N", "Player_W"]
+                                img = ["Map", "Minimap", "Player", "Player_E", "Player_N", "Player_W", "Zombie_1"]
                                 for image in img:
                                         r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Images/{0}.gif".format(image))
                                         done += 1
