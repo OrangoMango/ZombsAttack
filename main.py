@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import messagebox
-import time, random
+import time, random, math
 
 import maps, gstat, home
 
@@ -52,7 +52,7 @@ class Game:
                 elif side == "e":
                         return (590, random.randint(20, 420)), side
         def gameover(self):
-                k, d = self.player.kills, self.player.damage
+                k, d = self.player.kills, self.player.damage - self.player.kills * 100
                 
                 l = [0, 0]
                 
@@ -156,6 +156,7 @@ class Player:
                 self.id = "Player"
                 self.game.tk.bind("<KeyPress>", self.press)
                 self.game.tk.bind("<KeyRelease>", self.release)
+                self.game.tk.bind("<Motion>", self.mousemovement)
                 self.life = 100
                 self.timer = 0
                 self.direction = "n"
@@ -163,6 +164,65 @@ class Player:
                 self.kills = 0
                 self.damage = 0
                 self.lifelabel = LifeLabel(self.game, self)
+        def mousemovement(self, event):
+                x, y = event.x, event.y
+                sqpoints = ["nw", "ne", "sw", "se"]
+                if x >= 250 and y >= 250:
+                    sqp = sqpoints[3]
+                elif x >= 250 and y <= 250:
+                    sqp = sqpoints[1]
+                elif x <= 250 and y <= 250:
+                    sqp = sqpoints[0]
+                elif x <= 250 and y >= 250:
+                    sqp = sqpoints[2]
+
+                px, py = 250, 250
+
+                def getVl(p):
+                        if p == "nw":
+                                return (1, -1)
+                        elif p == "ne":
+                                return (-1, -1)
+                        elif p == "sw":
+                                return (-1, 1)
+                        elif p == "se":
+                                return (1, 1)
+
+                def getP(p, ns):
+                        if p == "nw":
+                                if ns == "n":
+                                        return "n"
+                                else:
+                                        return "w"
+                        elif p == "ne":
+                                if ns == "n":
+                                        return "n"
+                                else:
+                                        return "e"
+                        elif p == "sw":
+                                if ns == "n":
+                                        return "w"
+                                else:
+                                        return "s"
+                        elif p == "se":
+                                if ns == "n":
+                                        return "e"
+                                else:
+                                        return "s"
+                        
+                v1, v2 = getVl(sqp)
+
+                for n in range(int(math.sqrt(250**2+250**2))):
+                        if px == event.x:
+                                break
+                        px += v1
+                        py += v2
+                        if event.y < py:
+                                print(getP(sqp, "n"))
+                        elif event.y > py:
+                                print(getP(sqp, "s"))
+                        else:
+                                print("pseudon")
         def press(self, event):
                 if event.char == "d":
                         self.mx, self.my = -3, 0

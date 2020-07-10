@@ -7,10 +7,10 @@ import os, requests, json, platform
 class Profile:
         def __init__(self, home):
                 self.home = home
-                #self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/" #This line must be changed
+                self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/" #This line must be changed
 
                 #print(platform.system()) #To know platform ('Linux' or 'Windows')
-                self.path = "C:/Users/bambini/"
+                #self.path = "C:/Users/bambini/"
                 os.chdir(self.path)
                 self.name = "Guest"
                 self.data = {"Trophies" : 0}
