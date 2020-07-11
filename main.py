@@ -52,7 +52,7 @@ class Game:
                 elif side == "e":
                         return (590, random.randint(20, 420)), side
         def gameover(self):
-                k, d = self.player.kills, self.player.damage - self.player.kills * 100
+                k, d = self.player.kills, self.player.damage
                 
                 l = [0, 0]
                 
