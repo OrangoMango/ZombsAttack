@@ -6,7 +6,8 @@ import profiles
 class HelpButton:
         def __init__(self, window):
                 self.window = window
-                self.id = self.window.canvas.create_rectangle(250, 100, 350, 150, fill="blue")
+                self.image = PhotoImage(file="Data/Images/HelpButton.gif")
+                self.id = self.window.canvas.create_image(250, 100, anchor="nw", image=self.image)
         def click(self, event):
                 webbrowser.open("https://github.com/OrangoMango/ZombsAttack/wiki")
 

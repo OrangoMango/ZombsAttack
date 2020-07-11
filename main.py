@@ -67,8 +67,8 @@ class Game:
                 self.homewindow.profile.data["Trophies"] += trophies #Add throphies
                 self.homewindow.profile.save_saves()                 #Save trophies
                 
-                messagebox.showerror("Game over", "GAME OVER ._. +{0} Trophies".format(trophies))
-                ask = messagebox.askyesno("Replay", "Do you want to play another time?")
+                messagebox.showerror("Game over", "{0} ._. +{1} {2}".format(self.homewindow.profile.language_texts[4], trophies, self.homewindow.profile.language_texts[6]))
+                ask = messagebox.askyesno("Replay", self.homewindow.profile.language_texts[5])
                 if ask:
                         self.tk.destroy()
                         main()
@@ -218,11 +218,11 @@ class Player:
                         px += v1
                         py += v2
                         if event.y < py:
-                                print(getP(sqp, "n"))
+                                pass#print(getP(sqp, "n"))
                         elif event.y > py:
-                                print(getP(sqp, "s"))
+                                pass#print(getP(sqp, "s"))
                         else:
-                                print("pseudon")
+                                pass#print("pseudon")
         def press(self, event):
                 if event.char == "d":
                         self.mx, self.my = -3, 0
