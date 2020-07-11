@@ -1,0 +1,7 @@
+Kills
+Enter name
+Damage
+Your stats
+Game Over
+Do you want to play again?
+Tropheis
