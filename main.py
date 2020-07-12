@@ -274,8 +274,8 @@ class Zombie:
                 self.life = 100
                 self.tag = tag
                 self.direction = initdirection
-                self.image = PhotoImage(file="Data/Images/Zombie_1.gif")
-                self.id = self.game.canvas.create_image(x, y, image=self.image, anchor="nw", tags="zombie_{0}".format(self.tag))
+                self.images = [PhotoImage(file="Data/Images/Zombie_{0}.gif".format(x)) for x in range(1, 8)]
+                self.id = self.game.canvas.create_image(x, y, image=self.images[random.randint(0,6)], anchor="nw", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
                 self.alivetimer = 0
                 self.fromplayer = False

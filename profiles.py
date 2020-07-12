@@ -12,7 +12,7 @@ class Profile:
                 #print(platform.system()) #To know platform ('Linux' or 'Windows')
                 #self.path = "C:/Users/bambini/"
                 os.chdir(self.path)
-                self.name = "Guest"
+                self.name = ""
                 self.data = {"Trophies" : 0}
                 self.language_texts = []
         def load_languages(self):
@@ -22,7 +22,7 @@ class Profile:
                                 r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Languages/{0}.txt".format(lanfile))
                                 open("Data/Languages/{0}.txt".format(lanfile), "wb").write(r.content)
 
-                LANGUAGE = "italiano" ####### SELECT HERE LANGUAGE ########
+                LANGUAGE = "english" ####### SELECT HERE LANGUAGE ########
                 
                 with open("Data/Languages/{0}.txt".format(LANGUAGE)) as f:
                         l = f.readlines()
@@ -36,7 +36,9 @@ class Profile:
                 self.troph_id = self.home.canvas.create_text(30, 10, anchor="nw", text=self.data["Trophies"], font="Calibri 12 bold")
                 self.troph_id_x = self.home.canvas.create_rectangle(25, 5, 135, 35)
         def ask_name(self):
-                self.name = s.askstring(self.language_texts[1], self.language_texts[1]+":")
+                while self.name == "" or self.name == None:
+                        self.name = s.askstring(self.language_texts[1], self.language_texts[1]+":")
+                print(self.name)
         def create_profile_data(self):
                 with open(self.name+"/"+"data.json", "w") as d:
                          json.dump(self.data, d, indent=4)
@@ -68,24 +70,28 @@ class Profile:
                         tk.title("Loading data...")
                         os.mkdir(".zombsAttack")
                         os.chdir(self.path+".zombsAttack")
+                        r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Images/Loadingimage.gif")
+                        open("Loadingimage.gif", "wb").write(r.content)
                         done = 0
-                        l = Label(tk, text="Loading... 0%")
-                        l.grid()
+                        loadimage = PhotoImage(file="Loadingimage.gif", master=tk)
+                        iml = Label(image=loadimage)
+                        iml.pack()
+                        l = Label(tk, text="Loading languages... 0%")
+                        l.pack()
                         p = t.Progressbar(tk, value=0)
-                        p.grid(row=1)
-                        tk.update()
+                        p.pack()
                         tk.update()
                         if not os.path.exists("Data"):
                                 os.mkdir("Data")
                                 self.load_languages()
                                 if not os.path.exists("Data/Images"):
                                         os.mkdir("Data/Images")
-                                img = ["Map", "Minimap", "Player", "Player_E", "Player_N", "Player_W", "Zombie_1", "PlayButton", "HelpButton"]
+                                img = ["Map", "Minimap", "Player", "Player_E", "Player_N", "Player_W"] + ["Zombie_{0}".format(x) for x in range(1, 9)] + ["PlayButton", "HelpButton"]
                                 for image in img:
                                         r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Images/{0}.gif".format(image))
                                         done += 1
                                         p.config(value=100/len(img)*done)
-                                        l.config(text="Loading... {0}%".format(int(100/len(img)*done)))
+                                        l.config(text="Loading data... {0}%".format(int(100/len(img)*done)))
                                         tk.update()
                                         open("Data/Images/{0}.gif".format(image), "wb").write(r.content)
                         
