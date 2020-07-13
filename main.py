@@ -274,8 +274,9 @@ class Zombie:
                 self.life = 100
                 self.tag = tag
                 self.direction = initdirection
-                self.images = [PhotoImage(file="Data/Images/Zombie_{0}.gif".format(x)) for x in range(1, 8)]
-                self.id = self.game.canvas.create_image(x, y, image=self.images[random.randint(0,6)], anchor="nw", tags="zombie_{0}".format(self.tag))
+                self.imgindex = random.randint(0,7)
+                self.images = [PhotoImage(file="Data/Images/Zombie_{0}.gif".format(x)) for x in range(1, 9)]
+                self.id = self.game.canvas.create_image(x, y, image=self.images[self.imgindex], anchor="nw", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
                 self.alivetimer = 0
                 self.fromplayer = False
@@ -358,7 +359,8 @@ class Zombie:
                 self.game.zombies.append(z)
         def getCoord(self):
                 pos = self.game.canvas.coords(self.id)
-                return pos+[pos[0]+50, pos[1]+50]
+                w = self.images[self.imgindex].width()
+                return pos+[pos[0]+w, pos[1]+w]
         def getPlayerDTrack(self):
                 player = self.game.player
                 p = player.getCoord()
