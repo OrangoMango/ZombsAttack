@@ -7,10 +7,10 @@ import os, requests, json, platform
 class Profile:
         def __init__(self, home):
                 self.home = home
-                self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/" #This line must be changed
+                #self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/" #This line must be changed
 
                 #print(platform.system()) #To know platform ('Linux' or 'Windows')
-                #self.path = "C:/Users/bambini/"
+                self.path = "C:/Users/bambini/"
                 os.chdir(self.path)
                 self.name = ""
                 self.data = {"Trophies" : 0}
@@ -67,7 +67,7 @@ class Profile:
         def set_asset(self):
                 if not os.path.exists(".zombsAttack"):
                         tk = Tk()
-                        tk.title("Loading data...")
+                        tk.title("Downloading data...")
                         os.mkdir(".zombsAttack")
                         os.chdir(self.path+".zombsAttack")
                         r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Images/Loadingimage.gif")
@@ -76,7 +76,7 @@ class Profile:
                         loadimage = PhotoImage(file="Loadingimage.gif", master=tk)
                         iml = Label(image=loadimage)
                         iml.pack()
-                        l = Label(tk, text="Loading languages... 0%")
+                        l = Label(tk, text="Downloading languages... 0%")
                         l.pack()
                         p = t.Progressbar(tk, value=0)
                         p.pack()
@@ -86,7 +86,7 @@ class Profile:
                                 self.load_languages()
                                 if not os.path.exists("Data/Images"):
                                         os.mkdir("Data/Images")
-                                img = ["Map", "Minimap", "Player", "Player_E", "Player_N", "Player_W"] + ["Zombie_{0}".format(x) for x in range(1, 9)] + ["PlayButton", "HelpButton"]
+                                img = ["Map", "Minimap", "Player", "Player_E", "Player_N", "Player_W"] + ["Zombie_{0}".format(x) for x in range(1, 9)] + ["PlayButton", "HelpButton", "Language", "Settings", "Statistics", "Back", "Shop"]
                                 for image in img:
                                         r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Images/{0}.gif".format(image))
                                         done += 1

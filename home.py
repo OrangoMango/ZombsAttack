@@ -14,7 +14,8 @@ class ScreenButton:
 class BackButton(ScreenButton):
         def __init__(self, *args):
                 ScreenButton.__init__(self, *args)
-                self.id = self.window.canvas.create_rectangle(30, 230, 120, 280, fill="lightgreen")
+                self.image = PhotoImage(file="Data/Images/Back.gif")
+                self.id = self.window.canvas.create_image(30, 230, image=self.image, anchor="nw")
                 self.toback = []
         def click(self, event):
                 for i in self.toback:
@@ -36,10 +37,29 @@ class PlayButton(ScreenButton):
                 self.image = PhotoImage(file="Data/Images/PlayButton.gif")
                 self.id = self.window.canvas.create_image(100, 100, anchor="nw", image=self.image)
 
+class SettingsButton(ScreenButton):
+        def __init__(self, *args):
+                ScreenButton.__init__(self, *args)
+                self.image = PhotoImage(file="Data/Images/Settings.gif")
+                self.id = self.window.canvas.create_image(420, 180, anchor="nw", image=self.image)
+
+class StatisticsButton(ScreenButton):
+        def __init__(self, *args):
+                ScreenButton.__init__(self, *args)
+                self.image = PhotoImage(file="Data/Images/Statistics.gif")
+                self.id = self.window.canvas.create_image(420, 80, anchor="nw", image=self.image)
+
+class ShopButton(ScreenButton):
+        def __init__(self, *args):
+                ScreenButton.__init__(self, *args)
+                self.image = PhotoImage(file="Data/Images/Shop.gif")
+                self.id = self.window.canvas.create_image(100, 170, anchor="nw", image=self.image)
+
 class LanguageButton(ScreenButton):
         def __init__(self, *args):
                 ScreenButton.__init__(self, *args)
-                self.id = self.window.canvas.create_rectangle(420, 130, 460, 170, fill="red")
+                self.image = PhotoImage(file="Data/Images/Language.gif")
+                self.id = self.window.canvas.create_image(420, 130, image=self.image, anchor="nw")
                 self.languages = [l.rpartition(".")[0] for l in os.listdir("Data/Languages")]
                 self.backbutton = None
                 self.languagesbuttons = []
@@ -61,16 +81,16 @@ class Window:
                 self.profile = profiles.Profile(self)
                 self.profile.set_asset()
                 self.tk = Tk()
+                self.tk.resizable(0, 0)
                 self.tk.title("ZombsAttack Lobby - OrangoMangoGames")
                 self.canvas = Canvas(self.tk, width=500, height=300, bg="yellow")
                 self.canvas.pack()
                 self.playbutton = PlayButton(self)
                 self.helpbutton = HelpButton(self)
                 self.languagebutton = LanguageButton(self)
-
-                self.canvas.create_rectangle(420, 80, 460, 120, fill="red")
-                self.canvas.create_rectangle(420, 180, 460, 220, fill="red")
-                self.canvas.create_rectangle(100, 170, 350, 220, fill="red")
+                self.settingsbutton = SettingsButton(self)
+                self.statisticsbutton = StatisticsButton(self)
+                self.shopbutton = ShopButton(self)
                 
                 self.canvas.tag_bind(self.playbutton.id, "<Button-1>", self.start)
                 self.canvas.tag_bind(self.helpbutton.id, "<Button-1>", self.helpbutton.click)
