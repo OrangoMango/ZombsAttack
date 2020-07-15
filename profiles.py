@@ -7,14 +7,15 @@ import os, requests, json, platform
 class Profile:
         def __init__(self, home):
                 self.home = home
-                #self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/" #This line must be changed
+                self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/" #This line must be changed
 
                 #print(platform.system()) #To know platform ('Linux' or 'Windows')
-                self.path = "C:/Users/bambini/"
+                #self.path = "C:/Users/bambini/"
                 os.chdir(self.path)
                 self.name = ""
-                self.data = {"Trophies" : 0}
+                self.data = {"Trophies" : 0, "Brains" : 0}
                 self.language_texts = []
+                self.LANGUAGE = "english"
         def load_languages(self):
                 if not os.path.exists("Data/Languages"):
                         os.mkdir("Data/Languages")
@@ -22,7 +23,7 @@ class Profile:
                                 r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Languages/{0}.txt".format(lanfile))
                                 open("Data/Languages/{0}.txt".format(lanfile), "wb").write(r.content)
 
-                LANGUAGE = "english" ####### SELECT HERE LANGUAGE ########
+                LANGUAGE = self.LANGUAGE ####### SELECT HERE LANGUAGE ########
                 
                 with open("Data/Languages/{0}.txt".format(LANGUAGE)) as f:
                         l = f.readlines()
@@ -46,8 +47,6 @@ class Profile:
                 if os.path.exists(self.name+"/"+"data.json"):
                         with open(self.name+"/"+"data.json") as f:
                                 self.data = json.load(f)
-                else:
-                        self.data = {"Trophies" : 0}
                 #print(self.data) this prints current data dictionary
         def save_saves(self):
                         if os.path.exists(self.name+"/"+"data.json"):
@@ -60,6 +59,12 @@ class Profile:
                 else:
                         with open("profile.txt", "w") as f:
                                 f.write(self.name)
+                if os.path.exists("language.txt"):
+                        with open("language.txt") as f:
+                                self.LANGUAGE = f.readline()
+                else:
+                        with open("language.txt", "w") as f:
+                                f.write(self.LANGUAGE)
         def create_profile_dir(self):
                 if not os.path.exists(self.name):
                         os.mkdir(self.name)
@@ -91,7 +96,7 @@ class Profile:
                                         r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Images/{0}.gif".format(image))
                                         done += 1
                                         p.config(value=100/len(img)*done)
-                                        l.config(text="Loading data... {0}%".format(int(100/len(img)*done)))
+                                        l.config(text="Downloading {0}... {1}%".format(image+".gif", int(100/len(img)*done)))
                                         tk.update()
                                         open("Data/Images/{0}.gif".format(image), "wb").write(r.content)
                         

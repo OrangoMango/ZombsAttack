@@ -1,21 +1,26 @@
 from tkinter import *
+from tkinter import messagebox
 import time, webbrowser, os
 
-import profiles
+import profiles, main
 
 class ScreenButton:
         def __init__(self, window):
                 self.window = window
                 self.id = None
                 self.image = None
+                self.bg = None
         def click(self, event):
-                print("Clicked")
+                self.bg = self.window.canvas.create_rectangle(0, 0, 500, 300, fill="yellow")
+                self.backbutton = BackButton(self.window)
+                self.backbutton.toback.append(self.bg)
 
 class BackButton(ScreenButton):
         def __init__(self, *args):
                 ScreenButton.__init__(self, *args)
                 self.image = PhotoImage(file="Data/Images/Back.gif")
                 self.id = self.window.canvas.create_image(30, 230, image=self.image, anchor="nw")
+                self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
                 self.toback = []
         def click(self, event):
                 for i in self.toback:
@@ -42,18 +47,46 @@ class SettingsButton(ScreenButton):
                 ScreenButton.__init__(self, *args)
                 self.image = PhotoImage(file="Data/Images/Settings.gif")
                 self.id = self.window.canvas.create_image(420, 180, anchor="nw", image=self.image)
+                self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
+        def click(self, event):
+                ScreenButton.click(self, event)
 
 class StatisticsButton(ScreenButton):
         def __init__(self, *args):
                 ScreenButton.__init__(self, *args)
                 self.image = PhotoImage(file="Data/Images/Statistics.gif")
                 self.id = self.window.canvas.create_image(420, 80, anchor="nw", image=self.image)
+                self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
+        def click(self, event):
+                ScreenButton.click(self, event)
 
 class ShopButton(ScreenButton):
         def __init__(self, *args):
                 ScreenButton.__init__(self, *args)
                 self.image = PhotoImage(file="Data/Images/Shop.gif")
                 self.id = self.window.canvas.create_image(100, 170, anchor="nw", image=self.image)
+                self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
+        def click(self, event):
+                ScreenButton.click(self, event)
+
+class LanguageSelectButton:
+        def __init__(self, window, x, y, x1, y1, language, tx, ty):
+                self.window = window
+                self.language = language
+                self.id = "LanguageSelect#{0}".format(language)
+                self.id_x = self.window.canvas.create_rectangle(x, y, x1, y1, fill="lightblue", tags=self.id)
+                self.id_y = self.window.canvas.create_text(tx, ty, anchor="nw", text=language, font="Calibri 13", tags=self.id)
+                self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
+        def click(self, event):
+                if self.window.profile.LANGUAGE == self.language:
+                        messagebox.showerror("Language", "This language is already selected")
+                        return
+                os.remove("language.txt")
+                self.window.profile.LANGUAGE = self.language
+                self.window.profile.config_name()
+                messagebox.showinfo("Language", "Language changed to {0}".format(self.language))
+                self.window.tk.destroy()
+                main.main()
 
 class LanguageButton(ScreenButton):
         def __init__(self, *args):
@@ -64,17 +97,17 @@ class LanguageButton(ScreenButton):
                 self.backbutton = None
                 self.languagesbuttons = []
         def click(self, event):
-                bg = self.window.canvas.create_rectangle(0, 0, 500, 300, fill="yellow")
+                self.bg = self.window.canvas.create_rectangle(0, 0, 500, 300, fill="yellow")
                 x = 0
+                y = 0
                 self.backbutton = BackButton(self.window)
-                self.window.canvas.tag_bind(self.backbutton.id, "<Button-1>", self.backbutton.click)
-                self.backbutton.toback.append(bg)
+                self.backbutton.toback.append(self.bg)
                 for language in self.languages:
-                        self.backbutton.toback.append(self.window.canvas.create_rectangle(40+x, 40, 140+x, 90, fill="lightblue"))
-                        self.backbutton.toback.append(self.window.canvas.create_text(57+x, 55, anchor="nw", text=language, font="Calibri 13"))
+                        self.backbutton.toback.append(LanguageSelectButton(self.window, 40+x, 40+y, 140+x, 90+y, language, 57+x, 55+y).id)
                         x += 100 + (20)
-        def language_select(self):
-                pass
+                        if x == 120 * 3:
+                                y += 50 + (20)
+                                x = 0
 
 class Window:
         def __init__(self):

@@ -65,6 +65,7 @@ class Game:
                 trophies = int(sum(l))
 
                 self.homewindow.profile.data["Trophies"] += trophies #Add throphies
+                self.homewindow.profile.data["Brains"] += self.player.add_brains #Add brains
                 self.homewindow.profile.save_saves()                 #Save trophies
                 
                 messagebox.showerror("Game over", "{0} ._. +{1} {2}".format(self.homewindow.profile.language_texts[4], trophies, self.homewindow.profile.language_texts[6]))
@@ -154,6 +155,7 @@ class Player:
                 self.id_x = self.game.canvas.create_image(200, 200, image=self.images[0], anchor="nw", tags="Player")
                 self.id_y = self.game.canvas.create_text(225, 190, text=self.name, tags="Player")
                 self.id = "Player"
+                self.add_brains = 0
                 self.game.tk.bind("<KeyPress>", self.press)
                 self.game.tk.bind("<KeyRelease>", self.release)
                 self.game.tk.bind("<Motion>", self.mousemovement)
@@ -349,8 +351,10 @@ class Zombie:
                 self.lifelabel.delete()
                 if from_player:
                         self.game.player.kills += 1
-                        self.game.gamestats.labels[0]["text"] = "Kills: {0}".format(self.game.player.kills)
-                        f = FlowingText(self.game, p[0]+(p[2]-p[0])/2, p[1]+(p[3]-p[1])/2, text="+1 Kill", tag=self.game.ftextsn)
+                        self.game.player.add_brains += 1
+                        self.game.gamestats.labels[0]["text"] = "{0}: {1}".format(self.game.homewindow.profile.language_texts[0], self.game.player.kills)
+                        self.game.gamestats.labels[2]["text"] = "{0}: {1}".format(self.game.homewindow.profile.language_texts[7], self.game.player.kills)
+                        f = FlowingText(self.game, p[0]+(p[2]-p[0])/2, p[1]+(p[3]-p[1])/2, text="+1 {0}\n \n+1 {1}".format(self.game.homewindow.profile.language_texts[0], self.game.homewindow.profile.language_texts[7]), tag=self.game.ftextsn)
                         self.game.ftextsn += 1
                         self.game.ftexts.append(f)
                 zs = self.game.getZombieSpawn()
@@ -449,7 +453,7 @@ class Patron:
                                if pos[0] >= z_pos[0] and pos[0] <= z_pos[2]:
                                        zombie.life -= 15
                                        self.player.damage += 15
-                                       self.game.gamestats.labels[1]["text"] = "Damage: {0}".format(self.player.damage)
+                                       self.game.gamestats.labels[1]["text"] = "{0}: {1}".format(self.game.homewindow.profile.language_texts[2], self.player.damage)
                                        zombie.lifelabel.update()
                                        self.delete()
                                        if zombie.life <= 0:
