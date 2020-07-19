@@ -6,3 +6,14 @@ Hai perso
 Vuoi continuare a giocare?
 Trofei
 Cervelli
+Lingua
+Lingua cambiata a {0}
+Questa lingua è già stata selezionata
+Vita
+Nessuna
+Bronzo
+Argento
+Oro
+Diamante
+Platino
+Leggendaria

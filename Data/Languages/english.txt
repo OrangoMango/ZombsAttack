@@ -6,3 +6,14 @@ Game Over
 Do you want to play again?
 Tropheis
 Brains
+Language
+Language changed to {0}
+This language is already selected
+Life
+None
+Bronz
+Silver
+Gold
+Diamand
+Platinium
+Leggendary
