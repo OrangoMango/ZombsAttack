@@ -64,9 +64,9 @@ class Game:
                         
                 trophies = int(sum(l))
 
-                self.homewindow.profile.data["Trophies"] += trophies #Add throphies
-                self.homewindow.profile.data["Brains"] += self.player.add_brains #Add brains
-                self.homewindow.profile.save_saves()                 #Save trophies
+                self.homewindow.profile.data["Trophies"] += trophies               #Add throphies
+                self.homewindow.profile.data["Brains"] += self.player.add_brains   #Add brains
+                self.homewindow.profile.save_saves()                               #Save trophies
                 
                 messagebox.showerror("Game over", "{0} ._. +{1} {2}".format(self.homewindow.profile.language_texts[4], trophies, self.homewindow.profile.language_texts[6]))
                 ask = messagebox.askyesno("Replay", self.homewindow.profile.language_texts[5])
@@ -252,6 +252,7 @@ class Player:
                 p = Patron(self.game, self, tag=self.game.p_n)
                 self.game.patrons.append(p)
                 self.game.p_n += 1
+                self.game.gamestats.labels[3]["text"] = "{0}: {1}".format(self.game.homewindow.profile.language_texts[11], self.life)
         def release(self, event):
                 self.mx, self.my = 0, 0
         def draw(self):
@@ -326,6 +327,7 @@ class Zombie:
                         self.game.canvas.move(self.lifelabel.labid, (-self.dx)*15, (-self.dy)*15)
                         if not self.game.player.life < 10:
                                 self.game.player.life -= 10
+                                self.game.gamestats.labels[3]["text"] = "{0}: {1}".format(self.game.homewindow.profile.language_texts[11], self.game.player.life)
                         else:
                                 self.game.gameover()
                         self.game.player.lifelabel.update()
@@ -351,10 +353,11 @@ class Zombie:
                 self.lifelabel.delete()
                 if from_player:
                         self.game.player.kills += 1
-                        self.game.player.add_brains += 1
+                        brn = random.randint(1,5)
+                        self.game.player.add_brains += brn
                         self.game.gamestats.labels[0]["text"] = "{0}: {1}".format(self.game.homewindow.profile.language_texts[0], self.game.player.kills)
-                        self.game.gamestats.labels[2]["text"] = "{0}: {1}".format(self.game.homewindow.profile.language_texts[7], self.game.player.kills)
-                        f = FlowingText(self.game, p[0]+(p[2]-p[0])/2, p[1]+(p[3]-p[1])/2, text="+1 {0}\n \n+1 {1}".format(self.game.homewindow.profile.language_texts[0], self.game.homewindow.profile.language_texts[7]), tag=self.game.ftextsn)
+                        self.game.gamestats.labels[2]["text"] = "{0}: {1}".format(self.game.homewindow.profile.language_texts[7], self.game.player.add_brains)
+                        f = FlowingText(self.game, p[0]+(p[2]-p[0])/2, p[1]+(p[3]-p[1])/2, text="+1 {0}\n \n+{2} {1}".format(self.game.homewindow.profile.language_texts[0], self.game.homewindow.profile.language_texts[7], brn), tag=self.game.ftextsn)
                         self.game.ftextsn += 1
                         self.game.ftexts.append(f)
                 zs = self.game.getZombieSpawn()

@@ -79,12 +79,12 @@ class LanguageSelectButton:
                 self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
         def click(self, event):
                 if self.window.profile.LANGUAGE == self.language:
-                        messagebox.showerror("Language", "This language is already selected")
+                        messagebox.showerror(self.window.profile.language_texts[8], self.window.profile.language_texts[10])
                         return
+                messagebox.showinfo(self.window.profile.language_texts[8], self.window.profile.language_texts[9].format(self.language))
                 os.remove("language.txt")
                 self.window.profile.LANGUAGE = self.language
                 self.window.profile.config_name()
-                messagebox.showinfo("Language", "Language changed to {0}".format(self.language))
                 self.window.tk.destroy()
                 main.main()
 
@@ -118,6 +118,7 @@ class Window:
                 self.tk.title("ZombsAttack Lobby - OrangoMangoGames")
                 self.canvas = Canvas(self.tk, width=500, height=300, bg="yellow")
                 self.canvas.pack()
+                self.canvas.create_text(3, 285, font="Calibri 6 bold", anchor="nw", text="Game made by OrangoMango (Paul Kocian, SCRIPT) and Dado14 (Andrea Pintus, IMAGES) (C) 2020")
                 self.playbutton = PlayButton(self)
                 self.helpbutton = HelpButton(self)
                 self.languagebutton = LanguageButton(self)
