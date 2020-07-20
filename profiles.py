@@ -3,6 +3,7 @@ import tkinter.ttk as t
 import tkinter.simpledialog as s
 
 import os, requests, json, platform
+import home
 
 class Profile:
         def __init__(self, home):
@@ -17,7 +18,7 @@ class Profile:
                 self.language_texts = []
                 self.LANGUAGE = "english"
         def get_leagues(self):
-                l1, l2, l3, l4, l5, l6, l7 = self.language_texts[12:19]
+                l1, l2, l3, l4, l5, l6, l7, l8 = self.language_texts[12:20]
                 t = self.data["Trophies"]
 
                 # l1 t < 400
@@ -25,17 +26,42 @@ class Profile:
                 # l3 t >= 1000 and t < 1500
                 # l4 t >= 1500 and t < 2000
                 # l5 t >= 2000 and t < 3000
-                # l6 t >= 3000 and t < 4500
-                # l7 t >= 4500
+                # l6 t >= 3000 and t < 5000
+                # l7 t >= 5000 and t < 5800
+                # l8 t >= 5800
                 
                 self.leagues = { l1 : t < 400,
                                  l2 : t >= 400 and t < 800,
                                  l3 : t >= 1000 and t < 1500,
                                  l4 : t >= 1500 and t < 2000,
                                  l5 : t >= 2000 and t < 3000,
-                                 l6 : t >= 3000 and t < 4500,
-                                 l7 : t >= 4500
+                                 l6 : t >= 3000 and t < 5000,
+                                 l7 : t >= 5000 and t < 5800,
+                                 l8 : t >= 5800
                                 }
+
+                # l1 1
+                # l2 5
+                # l3 10
+                # l4 20
+                # l5 25
+                # l6 30
+                # l7 35
+                # l8 40
+
+                self.mtrophies = {
+                                   l1 : 1,
+                                   l2 : 5,
+                                   l3 : 10,
+                                   l4 : 20,
+                                   l5 : 25,
+                                   l6 : 30,
+                                   l7 : 35,
+                                   l8 : 40
+                                }
+                
+                print(self.mtrophies)
+                
                 league = None
                 for k, v in self.leagues.items():
                         if v:
@@ -50,16 +76,17 @@ class Profile:
                                 r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Languages/{0}.txt".format(lanfile))
                                 open("Data/Languages/{0}.txt".format(lanfile), "wb").write(r.content)
 
-                LANGUAGE = self.LANGUAGE ####### SELECT HERE LANGUAGE ########
+                LANGUAGE = self.LANGUAGE
                 
                 with open("Data/Languages/{0}.txt".format(LANGUAGE)) as f:
                         l = f.readlines()
                         for i in l:
                                 self.language_texts.append(i.rstrip("\n"))
-                print("Sei in lega", self.get_leagues())
+                self.current_league = self.get_leagues()
+                print("Sei in lega", self.current_league)
                 
         def show_gui(self):
-                self.id = self.home.canvas.create_text(400, 10, text=self.name)
+                self.id = home.ProfileButton(self.home, name=self.name).id
                 self.id_x = None #TBD
                 self.troph_id = self.home.canvas.create_text(30, 10, anchor="nw", text=self.data["Trophies"], font="Calibri 12 bold")
                 self.troph_id_x = self.home.canvas.create_rectangle(25, 5, 135, 35)
@@ -89,12 +116,18 @@ class Profile:
                 else:
                         with open("profile.txt", "w") as f:
                                 f.write(self.name)
+                f.close()
                 if os.path.exists("language.txt"):
                         with open("language.txt") as f:
                                 self.LANGUAGE = f.readline()
                 else:
                         with open("language.txt", "w") as f:
                                 f.write(self.LANGUAGE)
+                f.close()
+                if not os.path.exists("version.txt"):
+                        with open("version.txt", "w") as f:
+                                f.write(str(self.home.version))
+                                f.close()
         def create_profile_dir(self):
                 if not os.path.exists(self.name):
                         os.mkdir(self.name)
@@ -123,10 +156,10 @@ class Profile:
                                         os.mkdir("Data/Images")
                                 img = ["Map", "Minimap", "Player", "Player_E", "Player_N", "Player_W"] + ["Zombie_{0}".format(x) for x in range(1, 9)] + ["PlayButton", "HelpButton", "Language", "Settings", "Statistics", "Back", "Shop"]
                                 for image in img:
-                                        l.config(text="Downloading {0}... {1}%".format(image+".gif", int(100/len(img)*done)))
                                         r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Images/{0}.gif".format(image))
                                         done += 1
                                         p.config(value=100/len(img)*done)
+                                        l.config(text="Downloading {0}... {1}%".format(image+".gif", int(100/len(img)*done)))
                                         tk.update()
                                         open("Data/Images/{0}.gif".format(image), "wb").write(r.content)
                         

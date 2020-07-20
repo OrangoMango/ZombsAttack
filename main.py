@@ -55,20 +55,23 @@ class Game:
                 k, d = self.player.kills, self.player.damage
                 
                 l = [0, 0]
-                
+                sy = "+"
                 
                 for i in range(k):
                         l[0] += 0.3
                 for i in range(d):
                         l[1] += 0.04
-                        
-                trophies = int(sum(l))
+                if k >= self.homewindow.profile.mtrophies[self.homewindow.profile.current_league]:
+                        trophies = int(sum(l))
+                else:
+                        trophies = -self.homewindow.profile.mtrophies[self.homewindow.profile.current_league]
+                        sy = ""
 
                 self.homewindow.profile.data["Trophies"] += trophies               #Add throphies
                 self.homewindow.profile.data["Brains"] += self.player.add_brains   #Add brains
                 self.homewindow.profile.save_saves()                               #Save trophies
                 
-                messagebox.showerror("Game over", "{0} ._. +{1} {2}".format(self.homewindow.profile.language_texts[4], trophies, self.homewindow.profile.language_texts[6]))
+                messagebox.showerror("Game over", "{0} ._. {3}{1} {2}".format(self.homewindow.profile.language_texts[4], trophies, self.homewindow.profile.language_texts[6], sy))
                 ask = messagebox.askyesno("Replay", self.homewindow.profile.language_texts[5])
                 if ask:
                         self.tk.destroy()
@@ -96,6 +99,10 @@ class FlowingText:
                                 self.game.ftexts.remove(ft)
                                 break
                 
+class ShootPointer:
+        def __init__(self, game, direction):
+                self.game = game
+                self.id = self.game.canvas.create_oval(90, 90, 120, 120, fill="black")
 
 class LifeLabel:
         def __init__(self, game, player, position="bottom"):
@@ -147,6 +154,10 @@ class LifeLabel:
                 self.game.canvas.delete(self.id)
                 self.game.canvas.delete(self.labid)
 
+class FakeEvent:
+        x = 30
+        y = 30
+
 class Player:
         def __init__(self, game):
                 self.game = game
@@ -165,6 +176,7 @@ class Player:
                 self.mx, self.my = 0, 0
                 self.kills = 0
                 self.damage = 0
+                self.shootpointer = ShootPointer(self.game, self.mousemovement(FakeEvent))
                 self.lifelabel = LifeLabel(self.game, self)
         def mousemovement(self, event):
                 x, y = event.x, event.y
@@ -220,11 +232,11 @@ class Player:
                         px += v1
                         py += v2
                         if event.y < py:
-                                pass#print(getP(sqp, "n"))
+                                return getP(sqp, "n")
                         elif event.y > py:
-                                pass#print(getP(sqp, "s"))
+                                return getP(sqp, "s")
                         else:
-                                pass#print("pseudon")
+                                return "pseudon"
         def press(self, event):
                 if event.char == "d":
                         self.mx, self.my = -3, 0

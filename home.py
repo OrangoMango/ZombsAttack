@@ -15,6 +15,19 @@ class ScreenButton:
                 self.backbutton = BackButton(self.window)
                 self.backbutton.toback.append(self.bg)
 
+class ProfileButton(ScreenButton):
+        def __init__(self, *args, name="Guest"):
+                ScreenButton.__init__(self, *args)
+                self.name = name
+                self.id = self.window.canvas.create_text(400, 20, text=self.name, font="Calibri 12")
+                self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
+        def click(self, event):
+                ScreenButton.click(self, event)
+                self.frame = LabelFrame(self.window.tk, text="Profile")
+                wf = self.window.canvas.create_window(100, 90, window=self.frame, anchor="nw")
+                Label(self.frame, text="Profile name: {0}".format(self.name)).pack()
+                self.backbutton.toback.append(wf)
+
 class BackButton(ScreenButton):
         def __init__(self, *args):
                 ScreenButton.__init__(self, *args)
@@ -111,6 +124,7 @@ class LanguageButton(ScreenButton):
 
 class Window:
         def __init__(self):
+                self.version = 1.5
                 self.profile = profiles.Profile(self)
                 self.profile.set_asset()
                 self.tk = Tk()
@@ -118,7 +132,7 @@ class Window:
                 self.tk.title("ZombsAttack Lobby - OrangoMangoGames")
                 self.canvas = Canvas(self.tk, width=500, height=300, bg="yellow")
                 self.canvas.pack()
-                self.canvas.create_text(3, 285, font="Calibri 6 bold", anchor="nw", text="Game made by OrangoMango (Paul Kocian, SCRIPT) and Dado14 (Andrea Pintus, IMAGES) (C) 2020")
+                self.canvas.create_text(3, 285, font="Calibri 6 bold", anchor="nw", text="Game made by OrangoMango (Paul Kocian, SCRIPT) and Dado14 (Andrea Pintus, DESIGN) v{0} (C) 2020".format(self.version))
                 self.playbutton = PlayButton(self)
                 self.helpbutton = HelpButton(self)
                 self.languagebutton = LanguageButton(self)
