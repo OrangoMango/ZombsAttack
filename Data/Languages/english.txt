@@ -12,6 +12,7 @@ This language is already selected
 Life
 None
 Bronz
+Iron
 Silver
 Gold
 Diamand
