@@ -102,7 +102,8 @@ class FlowingText:
 class ShootPointer:
         def __init__(self, game, direction):
                 self.game = game
-                self.id = self.game.canvas.create_oval(90, 90, 120, 120, fill="black")
+                self.direction = direction
+                self.id = self.game.canvas.create_oval(90, 90, 110, 110, fill="black")
 
 class LifeLabel:
         def __init__(self, game, player, position="bottom"):
