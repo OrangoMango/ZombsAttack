@@ -24,15 +24,16 @@ class ProfileButton(ScreenButton):
                 self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
         def click(self, event):
                 ScreenButton.click(self, event)
-                self.frame = LabelFrame(self.window.tk, text=self.window.profile.language_texts[20])
+                self.frame = LabelFrame(self.window.tk, text=self.window.profile.language_texts[20], bg="yellow")
                 wf = self.window.canvas.create_window(30, 90, window=self.frame, anchor="nw")
-                Label(self.frame, text=self.window.profile.language_texts[21]+": {0}".format(self.name)).grid()
-                Label(self.frame, text=self.window.profile.language_texts[22]+":").grid(row=1)
-                Button(self.frame, text=self.window.profile.language_texts[23], command=self.download_profile).grid(column=1, row=1)
+                Label(self.frame, text=self.window.profile.language_texts[21]+": {0}".format(self.name), bg="yellow").grid()
+                Label(self.frame, text=self.window.profile.language_texts[22]+":", bg="yellow").grid(row=1)
+                Button(self.frame, text=self.window.profile.language_texts[23], command=self.download_profile, bg="yellow").grid(column=1, row=1)
                 self.backbutton.toback.append(wf)
                 ############################################
-                self.frame2 = LabelFrame(self.window.tk, text=self.window.profile.language_texts[25])
+                self.frame2 = LabelFrame(self.window.tk, text=self.window.profile.language_texts[25], bg="yellow")
                 wf2 = self.window.canvas.create_window(300, 90, window=self.frame2, anchor="nw")
+                self.backbutton.toback.append(wf2)
                 profiles_available = []
                 for f in os.listdir():
                         if f != "Data" and not f.endswith(".txt") and not f.endswith(".gif"):
@@ -45,12 +46,12 @@ class ProfileButton(ScreenButton):
                         self.selection_button.config(text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()))
                 
                 for profile in profiles_available:
-                        r = Radiobutton(self.frame2, text=profile, variable=self.select, value=profile, command=update_text_button)
+                        r = Radiobutton(self.frame2, text=profile, variable=self.select, value=profile, command=update_text_button, bg="yellow")
                         r.grid(row=profiles_available.index(profile))
                         radiobuttons.append(r)
-                self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()))
+                self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()), bg="yellow")
                 self.selection_button.grid(row=len(profiles_available))
-                Button(self.frame2, text=self.window.profile.language_texts[27]).grid(row=len(profiles_available)+1)
+                Button(self.frame2, text=self.window.profile.language_texts[27], bg="yellow").grid(row=len(profiles_available)+1)
         def create_profile(self):
                 os.remove("profile.txt")
                 self.window.tk.destroy()
