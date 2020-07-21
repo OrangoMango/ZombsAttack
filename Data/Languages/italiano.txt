@@ -18,3 +18,9 @@ Oro
 Diamante
 Platino
 Leggendaria
+Profilo
+Nome profilo
+Scarica profilo
+Scarica
+Profilo salvato
+Altri profili

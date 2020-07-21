@@ -18,3 +18,9 @@ Gold
 Diamand
 Platinium
 Leggendary
+Profile
+Profile name
+Download profile
+Download
+Profile saved
+Other profiles
