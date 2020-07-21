@@ -94,9 +94,14 @@ class Profile:
                 self.brains_id_x = self.home.canvas.create_rectangle(155, 5, 265, 35)
                 self.league = self.home.canvas.create_rectangle(100, 5, 130, 35, fill="orange")
         def ask_name(self):
+                print(self.language_texts)
+                n = self.name
                 while self.name == "" or self.name == None:
+                        tk = Tk()
                         self.name = s.askstring(self.language_texts[1], self.language_texts[1]+":")
+                        tk.destroy()
                 print(self.name)
+                return n
         def create_profile_data(self):
                 with open(self.name+"/"+"data.json", "w") as d:
                          json.dump(self.data, d, indent=4)
@@ -115,7 +120,12 @@ class Profile:
                                 self.name = f.readline()
                 else:
                         with open("profile.txt", "w") as f:
+                                n = self.ask_name()
                                 f.write(self.name)
+                                if n in os.listdir():
+                                        return
+                                else:
+                                        self.create_profile_dir()
                 f.close()
                 if os.path.exists("language.txt"):
                         with open("language.txt") as f:
@@ -163,13 +173,11 @@ class Profile:
                                         tk.update()
                                         open("Data/Images/{0}.gif".format(image), "wb").write(r.content)
                         
-                        self.ask_name()
                         self.config_name()
-                        self.create_profile_dir()
                                         
                         tk.destroy()
                 else:
                         os.chdir(self.path+".zombsAttack")
+                        self.load_languages()
                         self.config_name()
                         self.load_saves()
-                        self.load_languages()

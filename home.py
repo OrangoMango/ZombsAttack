@@ -33,9 +33,32 @@ class ProfileButton(ScreenButton):
                 ############################################
                 self.frame2 = LabelFrame(self.window.tk, text=self.window.profile.language_texts[25])
                 wf2 = self.window.canvas.create_window(300, 90, window=self.frame2, anchor="nw")
-                Label(self.frame2, text="Ciao").pack()
+                profiles_available = []
+                for f in os.listdir():
+                        if f != "Data" and not f.endswith(".txt") and not f.endswith(".gif"):
+                                profiles_available.append(f)
+                radiobuttons = []
+                self.select = StringVar(master=self.window.tk)
+                self.select.set(self.name)
+
+                def update_text_button():
+                        self.selection_button.config(text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()))
+                
+                for profile in profiles_available:
+                        r = Radiobutton(self.frame2, text=profile, variable=self.select, value=profile, command=update_text_button)
+                        r.grid(row=profiles_available.index(profile))
+                        radiobuttons.append(r)
+                self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()))
+                self.selection_button.grid(row=len(profiles_available))
+                Button(self.frame2, text=self.window.profile.language_texts[27]).grid(row=len(profiles_available)+1)
+        def create_profile(self):
+                os.remove("profile.txt")
+                self.window.tk.destroy()
+                main.main()
         def download_profile(self):
                 path = filedialog.asksaveasfilename(filetypes=[(".bin BinaryFile", "*.bin")])
+                if not path:
+                        return
                 f = open(path, "wb")
                 pickle.dump(self.window.profile.data, f)
                 messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[24])
