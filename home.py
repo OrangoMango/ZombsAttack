@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
-import time, webbrowser, os
+from tkinter import filedialog
+import time, webbrowser, os, sys, pickle
 
 import profiles, main
 
@@ -23,10 +24,21 @@ class ProfileButton(ScreenButton):
                 self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
         def click(self, event):
                 ScreenButton.click(self, event)
-                self.frame = LabelFrame(self.window.tk, text="Profile")
-                wf = self.window.canvas.create_window(100, 90, window=self.frame, anchor="nw")
-                Label(self.frame, text="Profile name: {0}".format(self.name)).pack()
+                self.frame = LabelFrame(self.window.tk, text=self.window.profile.language_texts[20])
+                wf = self.window.canvas.create_window(30, 90, window=self.frame, anchor="nw")
+                Label(self.frame, text=self.window.profile.language_texts[21]+": {0}".format(self.name)).grid()
+                Label(self.frame, text=self.window.profile.language_texts[22]+":").grid(row=1)
+                Button(self.frame, text=self.window.profile.language_texts[23], command=self.download_profile).grid(column=1, row=1)
                 self.backbutton.toback.append(wf)
+                ############################################
+                self.frame2 = LabelFrame(self.window.tk, text=self.window.profile.language_texts[25])
+                wf2 = self.window.canvas.create_window(300, 90, window=self.frame2, anchor="nw")
+                Label(self.frame2, text="Ciao").pack()
+        def download_profile(self):
+                path = filedialog.asksaveasfilename(filetypes=[(".bin BinaryFile", "*.bin")])
+                f = open(path, "wb")
+                pickle.dump(self.window.profile.data, f)
+                messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[24])
 
 class BackButton(ScreenButton):
         def __init__(self, *args):
@@ -124,9 +136,14 @@ class LanguageButton(ScreenButton):
 
 class Window:
         def __init__(self):
-                self.version = 1.5
+                self.version = 5.0
                 self.profile = profiles.Profile(self)
-                self.profile.set_asset()
+                try:
+                        self.profile.set_asset()
+                except:
+                        messagebox.showerror("Error", "Internet Error, please verify your connection!")
+                        os.rmdir("../.zombsAttack")
+                        sys.exit()
                 self.tk = Tk()
                 self.tk.resizable(0, 0)
                 self.tk.title("ZombsAttack Lobby - OrangoMangoGames")
