@@ -14,7 +14,7 @@ class Profile:
                 #self.path = "C:/Users/bambini/"
                 os.chdir(self.path)
                 self.name = ""
-                self.data = {"Trophies" : 0, "Brains" : 0}
+                self.data = {"Trophies" : 0, "Brains" : 0, "Name" : self.name}
                 self.language_texts = []
                 self.LANGUAGE = "english"
         def get_leagues(self):
@@ -70,6 +70,13 @@ class Profile:
                 return league
                 
         def load_languages(self):
+                if os.path.exists("language.txt"):
+                        with open("language.txt") as f:
+                                self.LANGUAGE = f.readline()
+                else:
+                        with open("language.txt", "w") as f:
+                                f.write(self.LANGUAGE)
+                f.close()
                 if not os.path.exists("Data/Languages"):
                         os.mkdir("Data/Languages")
                         for lanfile in ["italiano", "english"]:
@@ -100,7 +107,7 @@ class Profile:
                         tk = Tk()
                         self.name = s.askstring(self.language_texts[1], self.language_texts[1]+":")
                         tk.destroy()
-                print(self.name)
+                self.data["Name"] = self.name
                 return n
         def create_profile_data(self):
                 with open(self.name+"/"+"data.json", "w") as d:
@@ -126,13 +133,6 @@ class Profile:
                                         return
                                 else:
                                         self.create_profile_dir()
-                f.close()
-                if os.path.exists("language.txt"):
-                        with open("language.txt") as f:
-                                self.LANGUAGE = f.readline()
-                else:
-                        with open("language.txt", "w") as f:
-                                f.write(self.LANGUAGE)
                 f.close()
                 if not os.path.exists("version.txt"):
                         with open("version.txt", "w") as f:

@@ -485,18 +485,16 @@ class Patron:
 
 def main():
         global g, p, z
-    
-        g = Game()
-        p = Player(g)
-        g.player = p
-        z = Zombie(g, (20, -90), 50, 50, tag=g.zombies_number)
-        g.zombies_number += 1
-        g.zombies.append(z)
-        g.mainloop()
-        #try:
-        #        g.mainloop()
-        #except Exception as e:
-        #        print("Program end %s" % e)
+        try:
+                g = Game()
+                p = Player(g)
+                g.player = p
+                z = Zombie(g, (20, -90), 50, 50, tag=g.zombies_number)
+                g.zombies_number += 1
+                g.zombies.append(z)
+                g.mainloop()
+        except Exception as e:
+                print("Program end %s" % e)
 
 
 if __name__ == "__main__":

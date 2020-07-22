@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from tkinter import filedialog
-import time, webbrowser, os, sys, pickle
+import time, webbrowser, os, sys, pickle, json
 
 import profiles, main
 
@@ -25,20 +25,21 @@ class ProfileButton(ScreenButton):
         def click(self, event):
                 ScreenButton.click(self, event)
                 self.frame = LabelFrame(self.window.tk, text=self.window.profile.language_texts[20], bg="yellow")
-                wf = self.window.canvas.create_window(30, 90, window=self.frame, anchor="nw")
+                wf = self.window.canvas.create_window(110, 10, window=self.frame, anchor="nw")
                 Label(self.frame, text=self.window.profile.language_texts[21]+": {0}".format(self.name), bg="yellow").grid()
                 Label(self.frame, text=self.window.profile.language_texts[22]+":", bg="yellow").grid(row=1)
-                Button(self.frame, text=self.window.profile.language_texts[23], command=self.download_profile, bg="yellow").grid(column=1, row=1)
+                Button(self.frame, text=self.window.profile.language_texts[23], command=self.download_profile, bg="red").grid(column=1, row=1)
                 self.backbutton.toback.append(wf)
                 ############################################
                 self.frame2 = LabelFrame(self.window.tk, text=self.window.profile.language_texts[25], bg="yellow")
-                wf2 = self.window.canvas.create_window(300, 90, window=self.frame2, anchor="nw")
+                wf2 = self.window.canvas.create_window(110, 90, window=self.frame2, anchor="nw")
                 self.backbutton.toback.append(wf2)
                 profiles_available = []
                 for f in os.listdir():
                         if f != "Data" and not f.endswith(".txt") and not f.endswith(".gif"):
                                 profiles_available.append(f)
                 radiobuttons = []
+                print(len(profiles_available))
                 self.select = StringVar(master=self.window.tk)
                 self.select.set(self.name)
 
@@ -46,14 +47,27 @@ class ProfileButton(ScreenButton):
                         self.selection_button.config(text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()))
                 
                 for profile in profiles_available:
-                        r = Radiobutton(self.frame2, text=profile, variable=self.select, value=profile, command=update_text_button, bg="yellow")
+                        r = Radiobutton(self.frame2, text=profile, variable=self.select, value=profile, command=update_text_button, bg="yellow4")
                         r.grid(row=profiles_available.index(profile))
                         radiobuttons.append(r)
-                self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()), bg="yellow")
+                self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()), bg="red", command=self.select_profile)
                 self.selection_button.grid(row=len(profiles_available))
-                Button(self.frame2, text=self.window.profile.language_texts[27], bg="yellow").grid(row=len(profiles_available)+1)
+                Button(self.frame2, text=self.window.profile.language_texts[27], bg="red", command=self.create_profile).grid(row=len(profiles_available)+1)
+                Button(self.frame2, text=self.window.profile.language_texts[29], bg="red", command=self.upload_profile).grid(row=len(profiles_available)+1, column=1)
         def create_profile(self):
                 os.remove("profile.txt")
+                self.window.tk.destroy()
+                main.main()
+        def create_manual_profile(self, name):
+                os.mkdir(name)
+                with open("data.json", "w") as f:
+                        json.dump({"Trophies" : 0, "Brains" : 0, "Name" : name}, f) # Data RESET
+                        f.close()
+        def select_profile(self, name=None):
+                with open("profile.txt", "w") as f:
+                        f.write(self.select.get() if name is None else name)
+                        f.close()
+                messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[28]+": "+self.select.get())
                 self.window.tk.destroy()
                 main.main()
         def download_profile(self):
@@ -63,6 +77,16 @@ class ProfileButton(ScreenButton):
                 f = open(path, "wb")
                 pickle.dump(self.window.profile.data, f)
                 messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[24])
+                f.close()
+        def upload_profile(self):
+                path = filedialog.askopenfilename(filetypes=[(".bin BinaryFile", "*.bin")])
+                if not path:
+                        return
+                f = open(path, "rb")
+                d = pickle.load(f)
+                self.create_manual_profile(d["Name"])
+                self.select_profile(name=d["Name"])
+                f.close()
 
 class BackButton(ScreenButton):
         def __init__(self, *args):
@@ -164,9 +188,10 @@ class Window:
                 self.profile = profiles.Profile(self)
                 try:
                         self.profile.set_asset()
-                except:
+                except Exception as e:
+                        print(e)
                         messagebox.showerror("Error", "Internet Error, please verify your connection!")
-                        os.rmdir("../.zombsAttack")
+                        os.system("rm -r ../.zombsAttack")
                         sys.exit()
                 self.tk = Tk()
                 self.tk.resizable(0, 0)
