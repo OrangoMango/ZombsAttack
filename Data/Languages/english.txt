@@ -26,3 +26,5 @@ Profile saved
 Other profiles
 Select
 Create
+Profile selected
+upload profile

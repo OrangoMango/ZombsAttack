@@ -26,3 +26,5 @@ Profilo salvato
 Altri profili
 Seleziona
 Crea
+Profilo selezionato
+Carica profilo
