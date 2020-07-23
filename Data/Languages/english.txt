@@ -27,4 +27,9 @@ Other profiles
 Select
 Create
 Profile selected
-upload profile
+Upload profile
+Delete profile
+Are you sure that you want to delete profile, you can download it and save it in your computer?
+Profile deleted
+Could not delete current profile
+Profile exists, delete it before

@@ -28,3 +28,8 @@ Seleziona
 Crea
 Profilo selezionato
 Carica profilo
+Cancella profilo
+Sei sicuro di voler cancellare il profilo, puoi prima scaricarlo e salvarlo nel tuo computer?
+Profilo cancellato
+Impossibile cancellare il profilo corrente
+Profile già esiste, prima cancellalo
