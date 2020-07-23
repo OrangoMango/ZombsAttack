@@ -39,12 +39,12 @@ class ProfileButton(ScreenButton):
                         if f != "Data" and not f.endswith(".txt") and not f.endswith(".gif"):
                                 profiles_available.append(f)
                 radiobuttons = []
-                print(len(profiles_available))
                 self.select = StringVar(master=self.window.tk)
                 self.select.set(self.name)
 
                 def update_text_button():
                         self.selection_button.config(text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()))
+                        self.deletion_button.config(text=self.window.profile.language_texts[30]+" \"{0}\"".format(self.select.get()))
                 
                 for profile in profiles_available:
                         r = Radiobutton(self.frame2, text=profile, variable=self.select, value=profile, command=update_text_button, bg="yellow4")
@@ -52,26 +52,42 @@ class ProfileButton(ScreenButton):
                         radiobuttons.append(r)
                 self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()), bg="red", command=self.select_profile)
                 self.selection_button.grid(row=len(profiles_available))
+                self.deletion_button = Button(self.frame2, text=self.window.profile.language_texts[30]+" \"{0}\"".format(self.select.get()), bg="red", command=self.delete_profile)
+                self.deletion_button.grid(row=len(profiles_available), column=1)
                 Button(self.frame2, text=self.window.profile.language_texts[27], bg="red", command=self.create_profile).grid(row=len(profiles_available)+1)
                 Button(self.frame2, text=self.window.profile.language_texts[29], bg="red", command=self.upload_profile).grid(row=len(profiles_available)+1, column=1)
         def create_profile(self):
                 os.remove("profile.txt")
                 self.window.tk.destroy()
                 main.main()
+        def delete_profile(self):
+                ask = messagebox.askyesno(self.window.profile.language_texts[20], self.window.profile.language_texts[31])
+                if not ask:
+                        return
+                todelete = self.select.get()
+                if todelete == self.name:
+                        messagebox.showerror(self.window.profile.language_texts[20], self.window.profile.language_texts[33])
+                        return
+                os.remove(todelete+"/data.json")
+                os.rmdir(todelete)
+                messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[32])
+                self.window.tk.destroy()
+                main.main()
         def create_manual_profile(self, name):
                 os.mkdir(name)
-                with open("data.json", "w") as f:
+                with open(name+"/data.json", "w") as f:
                         json.dump({"Trophies" : 0, "Brains" : 0, "Name" : name}, f) # Data RESET
                         f.close()
         def select_profile(self, name=None):
                 with open("profile.txt", "w") as f:
                         f.write(self.select.get() if name is None else name)
                         f.close()
-                messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[28]+": "+self.select.get())
+                n = self.select.get() if name is None else name
+                messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[28]+": \""+ n +"\"")
                 self.window.tk.destroy()
                 main.main()
         def download_profile(self):
-                path = filedialog.asksaveasfilename(filetypes=[(".bin BinaryFile", "*.bin")])
+                path = filedialog.asksaveasfilename(filetypes=[(".bin Bin File", "*.bin")], initialfile="profile_{0}".format(self.name))
                 if not path:
                         return
                 f = open(path, "wb")
@@ -79,11 +95,14 @@ class ProfileButton(ScreenButton):
                 messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[24])
                 f.close()
         def upload_profile(self):
-                path = filedialog.askopenfilename(filetypes=[(".bin BinaryFile", "*.bin")])
+                path = filedialog.askopenfilename(filetypes=[(".bin Bin File", "*.bin")])
                 if not path:
                         return
                 f = open(path, "rb")
                 d = pickle.load(f)
+                if d["Name"] in os.listdir():
+                        messagebox.showerror(self.window.profile.language_texts[20], self.window.profile.language_texts[34])
+                        return
                 self.create_manual_profile(d["Name"])
                 self.select_profile(name=d["Name"])
                 f.close()
@@ -157,7 +176,7 @@ class LanguageSelectButton:
                 messagebox.showinfo(self.window.profile.language_texts[8], self.window.profile.language_texts[9].format(self.language))
                 os.remove("language.txt")
                 self.window.profile.LANGUAGE = self.language
-                self.window.profile.config_name()
+                self.window.profile.load_languages()
                 self.window.tk.destroy()
                 main.main()
 

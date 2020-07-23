@@ -100,13 +100,18 @@ class Profile:
                 self.brains_id = self.home.canvas.create_text(160, 10, anchor="nw", text=self.data["Brains"], font="Calibri 12 bold")
                 self.brains_id_x = self.home.canvas.create_rectangle(155, 5, 265, 35)
                 self.league = self.home.canvas.create_rectangle(100, 5, 130, 35, fill="orange")
-        def ask_name(self):
+        def ask_name(self, firsttime=False):
                 print(self.language_texts)
                 n = self.name
                 while self.name == "" or self.name == None:
-                        tk = Tk()
+                        if firsttime:
+                                tk = Tk()
+                                tk.title("ZombsAttack")
+                                img = PhotoImage(file="Loadingimage.gif")
+                                Label(tk, image=img).pack()
                         self.name = s.askstring(self.language_texts[1], self.language_texts[1]+":")
-                        tk.destroy()
+                        if firsttime:
+                                tk.destroy()
                 self.data["Name"] = self.name
                 return n
         def create_profile_data(self):
@@ -121,13 +126,13 @@ class Profile:
                         if os.path.exists(self.name+"/"+"data.json"):
                                         with open(self.name+"/"+"data.json", "w") as f:
                                                         json.dump(self.data, f, indent=4)
-        def config_name(self):
+        def config_name(self, ft=False):
                 if os.path.exists("profile.txt"):
                         with open("profile.txt") as f:
                                 self.name = f.readline()
                 else:
                         with open("profile.txt", "w") as f:
-                                n = self.ask_name()
+                                n = self.ask_name(ft)
                                 f.write(self.name)
                                 if n in os.listdir():
                                         return
@@ -179,5 +184,5 @@ class Profile:
                 else:
                         os.chdir(self.path+".zombsAttack")
                         self.load_languages()
-                        self.config_name()
+                        self.config_name(True)
                         self.load_saves()
