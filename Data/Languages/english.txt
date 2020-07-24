@@ -32,4 +32,6 @@ Delete profile
 Are you sure that you want to delete profile, you can download it and save it in your computer?
 Profile deleted
 Could not delete current profile
-Profile exists, delete it before
+Profile exists, do you want to replace it?
+Update available
+Checking updates
