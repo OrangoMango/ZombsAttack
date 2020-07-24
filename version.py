@@ -62,5 +62,10 @@ class Version:
     def show_gui(self):
         tk = Tk()
         tk.title(self.window.profile.language_texts[35])
-        tk.bind("<FocusOut>", lambda e: tk.focus_force())
+        
+        def focus(e):
+            time.sleep(0.15)
+            tk.focus_force()
+            
+        tk.bind("<FocusOut>", focus)
         Label(tk, text=self.window.profile.language_texts[35]).pack()
