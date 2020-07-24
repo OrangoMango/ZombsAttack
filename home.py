@@ -3,7 +3,7 @@ from tkinter import messagebox
 from tkinter import filedialog
 import time, webbrowser, os, sys, pickle, json
 
-import profiles, main
+import profiles, main, version
 
 class ScreenButton:
         def __init__(self, window):
@@ -36,7 +36,7 @@ class ProfileButton(ScreenButton):
                 self.backbutton.toback.append(wf2)
                 profiles_available = []
                 for f in os.listdir():
-                        if f != "Data" and not f.endswith(".txt") and not f.endswith(".gif"):
+                        if f != "Data" and f != "Bin_downloads" and not f.endswith(".txt") and not f.endswith(".gif"):
                                 profiles_available.append(f)
                 radiobuttons = []
                 self.select = StringVar(master=self.window.tk)
@@ -73,10 +73,10 @@ class ProfileButton(ScreenButton):
                 messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[32])
                 self.window.tk.destroy()
                 main.main()
-        def create_manual_profile(self, name):
+        def create_manual_profile(self, name, data=None):
                 os.mkdir(name)
                 with open(name+"/data.json", "w") as f:
-                        json.dump({"Trophies" : 0, "Brains" : 0, "Name" : name}, f) # Data RESET
+                        json.dump({"Trophies" : 0, "Brains" : 0, "Name" : name} if data is None else data, f) # Data RESET
                         f.close()
         def select_profile(self, name=None):
                 with open("profile.txt", "w") as f:
@@ -87,7 +87,7 @@ class ProfileButton(ScreenButton):
                 self.window.tk.destroy()
                 main.main()
         def download_profile(self):
-                path = filedialog.asksaveasfilename(filetypes=[(".bin Bin File", "*.bin")], initialfile="profile_{0}".format(self.name))
+                path = filedialog.asksaveasfilename(filetypes=[(".bin Bin File", "*.bin")], initialfile="profile_{0}".format(self.name), initialdir="Bin_downloads")
                 if not path:
                         return
                 f = open(path, "wb")
@@ -95,15 +95,19 @@ class ProfileButton(ScreenButton):
                 messagebox.showinfo(self.window.profile.language_texts[20], self.window.profile.language_texts[24])
                 f.close()
         def upload_profile(self):
-                path = filedialog.askopenfilename(filetypes=[(".bin Bin File", "*.bin")])
+                path = filedialog.askopenfilename(filetypes=[(".bin Bin File", "*.bin")], initialdir="Bin_downloads")
                 if not path:
                         return
                 f = open(path, "rb")
                 d = pickle.load(f)
                 if d["Name"] in os.listdir():
-                        messagebox.showerror(self.window.profile.language_texts[20], self.window.profile.language_texts[34])
-                        return
-                self.create_manual_profile(d["Name"])
+                        ask = messagebox.askyesno(self.window.profile.language_texts[20], self.window.profile.language_texts[34])
+                        if not ask:
+                                return
+                        else:
+                                os.remove(d["Name"]+"/data.json")
+                                os.rmdir(d["Name"])
+                self.create_manual_profile(d["Name"], d)
                 self.select_profile(name=d["Name"])
                 f.close()
 
@@ -215,6 +219,9 @@ class Window:
                 self.tk = Tk()
                 self.tk.resizable(0, 0)
                 self.tk.title("ZombsAttack Lobby - OrangoMangoGames")
+                self.version_instance = version.Version(self)
+                self.version_instance.get_data()
+                self.check_update = self.version_instance.check()
                 self.canvas = Canvas(self.tk, width=500, height=300, bg="yellow")
                 self.canvas.pack()
                 self.canvas.create_text(3, 285, font="Calibri 6 bold", anchor="nw", text="Game made by OrangoMango (Paul Kocian, SCRIPT) and Dado14 (Andrea Pintus, DESIGN) v{0} (C) 2020".format(self.version))
@@ -229,6 +236,8 @@ class Window:
                 self.canvas.tag_bind(self.helpbutton.id, "<Button-1>", self.helpbutton.click)
                 self.canvas.tag_bind(self.languagebutton.id, "<Button-1>", self.languagebutton.click)
                 self.profile.show_gui()
+                if self.check_update:
+                        self.version_instance.show_gui()
                 self.go = False
         def start(self, event):
                 self.tk.quit()

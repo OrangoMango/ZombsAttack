@@ -60,8 +60,6 @@ class Profile:
                                    l8 : 40
                                 }
                 
-                print(self.mtrophies)
-                
                 league = None
                 for k, v in self.leagues.items():
                         if v:
@@ -143,6 +141,8 @@ class Profile:
                         with open("version.txt", "w") as f:
                                 f.write(str(self.home.version))
                                 f.close()
+                if not os.path.exists("Bin_downloads"):
+                        os.mkdir("Bin_downloads")
         def create_profile_dir(self):
                 if not os.path.exists(self.name):
                         os.mkdir(self.name)
