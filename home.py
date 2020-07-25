@@ -221,7 +221,6 @@ class Window:
                 self.tk.title("ZombsAttack Lobby - OrangoMangoGames")
                 self.version_instance = version.Version(self)
                 self.version_instance.get_data()
-                self.check_update = self.version_instance.check()
                 self.canvas = Canvas(self.tk, width=500, height=300, bg="yellow")
                 self.canvas.pack()
                 self.canvas.create_text(3, 285, font="Calibri 6 bold", anchor="nw", text="Game made by OrangoMango (Paul Kocian, SCRIPT) and Dado14 (Andrea Pintus, DESIGN) v{0} (C) 2020".format(self.version))
@@ -236,8 +235,7 @@ class Window:
                 self.canvas.tag_bind(self.helpbutton.id, "<Button-1>", self.helpbutton.click)
                 self.canvas.tag_bind(self.languagebutton.id, "<Button-1>", self.languagebutton.click)
                 self.profile.show_gui()
-                if self.check_update:
-                        self.version_instance.show_gui()
+                self.version_instance.show_gui()
                 self.go = False
         def start(self, event):
                 self.tk.quit()
