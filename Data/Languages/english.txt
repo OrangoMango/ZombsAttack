@@ -33,5 +33,8 @@ Are you sure that you want to delete profile, you can download it and save it in
 Profile deleted
 Could not delete current profile
 Profile exists, do you want to replace it?
-Update available
+Update available, Do you want to update to version {0}?
 Checking updates
+Update available
+Upgrade to {0}
+Later
