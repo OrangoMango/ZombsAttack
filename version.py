@@ -111,7 +111,7 @@ class Version:
             for language in os.listdir("Versions/{0}/ZombsAttack-{0}/Data/Languages".format(newv)):
                 shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Languages/{1}".format(newv, language), "Data/Languages/{0}".format(language))
 
-            shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Loadingimage.gif".format(newv), "Data/Loadingimage.gif")
+            shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Images/Loadingimage.gif".format(newv), "Data/Loadingimage.gif")
 
             with open("version.txt", "w") as f:
                 f.write(str(newv))
