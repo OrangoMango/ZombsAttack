@@ -40,4 +40,4 @@ Upgrade to {0}
 Later
 Game must be restarted, after "ok" open game again
 Wait a minute...
-Update completed, a backup has been made in the directory ".zombsAttack/Backups" in  your home directory
+Update completed, a backup has been made in the directory ".zombsAttack/Backups" in your home directory
