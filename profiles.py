@@ -17,8 +17,6 @@ class Profile:
                 self.data = {"Trophies" : 0, "Brains" : 0, "Name" : self.name}
                 self.language_texts = []
                 self.LANGUAGE = "english"
-                if not os.path.exists(".zombsAttack/Profiles"):
-                        os.mkdir(".zombsAttack/Profiles")
         def get_leagues(self):
                 l1, l2, l3, l4, l5, l6, l7, l8 = self.language_texts[12:20]
                 t = self.data["Trophies"]
@@ -153,6 +151,8 @@ class Profile:
                         tk = Tk()
                         tk.title("Downloading data...")
                         os.mkdir(".zombsAttack")
+                        if not os.path.exists(".zombsAttack/Profiles"):
+                                os.mkdir(".zombsAttack/Profiles")
                         os.chdir(self.path+".zombsAttack")
                         r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Images/Loadingimage.gif")
                         open("Loadingimage.gif", "wb").write(r.content)
