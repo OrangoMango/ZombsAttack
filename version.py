@@ -1,6 +1,9 @@
-import urllib.request, threading, time
+import urllib.request, threading, time, requests, os, shutil, sys
 
 from tkinter import *
+from tkinter import messagebox
+from zipfile import ZipFile
+from distutils.dir_util import copy_tree
 import tkinter.ttk as t
 
 def th(ins):
@@ -23,6 +26,7 @@ def th(ins):
 class Version:
     def __init__(self, window):
         self.window = window
+        self.distribution = "Winux"
         self.s = False
         t = threading.Thread(target=th, args=(self,))
         t.start()
@@ -68,20 +72,57 @@ class Version:
         else:
             return False
     def show_gui(self):
-        if False: #self.get_current_version() < max(self.get_tags()):
+        if not self.check():
             return
         tk = Tk()
         tk.title(self.window.profile.language_texts[37])
-        
-        def focus(e):
-            time.sleep(0.15)
-            tk.focus_force()
 
         def later():
             tk.destroy()
+
+        def update():
+            tk.destroy()
+            
+            messagebox.showinfo(self.window.profile.language_texts[37], self.window.profile.language_texts[41])
+            
+            vpath = "https://github.com/OrangoMango/ZombsAttack/archive/v{0}.zip".format(newv)
+            if not os.path.exists("Versions"):
+                os.mkdir("Versions")
+            os.mkdir("Versions/{0}".format(newv))
+            r = requests.get(vpath)
+            open("Versions/{0}/{0}.zip".format(newv), "wb").write(r.content)
+            z = ZipFile("Versions/{0}/{0}.zip".format(newv), "r")
+            z.extractall(path="Versions/{0}/".format(newv))
+            oldpath = os.path.abspath(__file__+"/..")
+            print(oldpath)
+
+            if not os.path.exists("Backups"):
+                os.mkdir("Backups")
+            copy_tree("Data", oldpath+"/Data")
+            shutil.make_archive("Backups/backup_{0}".format(oldv), "zip", oldpath)
+            shutil.rmtree(oldpath+"/Data")
+            for file in os.listdir("Versions/{0}/ZombsAttack-{0}".format(newv)):
+                if file.endswith(".py"):
+                    shutil.copyfile("Versions/{0}/ZombsAttack-{0}/{1}".format(newv, file), oldpath+"/{0}".format(file))
+
+            for image in os.listdir("Versions/{0}/ZombsAttack-{0}/Data/Images".format(newv)):
+                shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Images/{1}".format(newv, image), "Data/Images/{0}".format(image))
+
+            for language in os.listdir("Versions/{0}/ZombsAttack-{0}/Data/Languages".format(newv)):
+                shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Languages/{1}".format(newv, language), "Data/Languages/{0}".format(language))
+
+            with open("version.txt", "w") as f:
+                f.write(str(newv))
+                f.close()
+            
+            ################################
+            messagebox.showinfo(self.window.profile.language_texts[37], self.window.profile.language_texts[42])
+            messagebox.showinfo(self.window.profile.language_texts[37], self.window.profile.language_texts[40])
+            self.window.tk.destroy()
+            sys.exit(0)
         
         oldv, newv = self.get_current_version(), max(self.get_tags())
-        tk.bind("<FocusOut>", focus)
+        tk.bind("<FocusOut>", lambda e: tk.focus_force())
         Label(tk, text=self.window.profile.language_texts[35].format(newv), font="Calibri 12 bold", fg="blue").pack()
-        Button(tk, text=self.window.profile.language_texts[38].format(newv), font="Calibri 10 bold").pack()
+        Button(tk, text=self.window.profile.language_texts[38].format(newv), command=update, font="Calibri 10 bold").pack()
         Button(tk, text=self.window.profile.language_texts[39], command=later, font="Calibri 10 bold").pack()

@@ -55,23 +55,20 @@ class Game:
                 k, d = self.player.kills, self.player.damage
                 
                 l = [0, 0]
-                sy = "+"
+                
                 
                 for i in range(k):
                         l[0] += 0.3
                 for i in range(d):
                         l[1] += 0.04
-                if k >= self.homewindow.profile.mtrophies[self.homewindow.profile.current_league]:
-                        trophies = int(sum(l))
-                else:
-                        trophies = -self.homewindow.profile.mtrophies[self.homewindow.profile.current_league]
-                        sy = ""
+                        
+                trophies = int(sum(l))
 
                 self.homewindow.profile.data["Trophies"] += trophies               #Add throphies
                 self.homewindow.profile.data["Brains"] += self.player.add_brains   #Add brains
                 self.homewindow.profile.save_saves()                               #Save trophies
                 
-                messagebox.showerror("Game over", "{0} ._. {3}{1} {2}".format(self.homewindow.profile.language_texts[4], trophies, self.homewindow.profile.language_texts[6], sy))
+                messagebox.showerror("Game over", "{0} ._. +{1} {2}".format(self.homewindow.profile.language_texts[4], trophies, self.homewindow.profile.language_texts[6]))
                 ask = messagebox.askyesno("Replay", self.homewindow.profile.language_texts[5])
                 if ask:
                         self.tk.destroy()
@@ -99,11 +96,6 @@ class FlowingText:
                                 self.game.ftexts.remove(ft)
                                 break
                 
-class ShootPointer:
-        def __init__(self, game, direction):
-                self.game = game
-                self.direction = direction
-                self.id = self.game.canvas.create_oval(90, 90, 110, 110, fill="black")
 
 class LifeLabel:
         def __init__(self, game, player, position="bottom"):
@@ -155,12 +147,6 @@ class LifeLabel:
                 self.game.canvas.delete(self.id)
                 self.game.canvas.delete(self.labid)
 
-class FakeEvent:
-        def __init__(self, x=30, y=30, char="k"):
-                self.x = x
-                self.y = y
-                self.char = char
-
 class Player:
         def __init__(self, game):
                 self.game = game
@@ -179,7 +165,6 @@ class Player:
                 self.mx, self.my = 0, 0
                 self.kills = 0
                 self.damage = 0
-                self.shootpointer = ShootPointer(self.game, self.mousemovement(FakeEvent()))
                 self.lifelabel = LifeLabel(self.game, self)
         def mousemovement(self, event):
                 x, y = event.x, event.y
@@ -235,11 +220,11 @@ class Player:
                         px += v1
                         py += v2
                         if event.y < py:
-                                return getP(sqp, "n")
+                                pass#print(getP(sqp, "n"))
                         elif event.y > py:
-                                return getP(sqp, "s")
+                                pass#print(getP(sqp, "s"))
                         else:
-                                return "pseudon"
+                                pass#print("pseudon")
         def press(self, event):
                 if event.char == "d":
                         self.mx, self.my = -3, 0
@@ -292,7 +277,7 @@ class Zombie:
                 self.life = 100
                 self.tag = tag
                 self.direction = initdirection
-                self.imgindex = random.randint(0,6) #0, 7
+                self.imgindex = random.randint(0,7)
                 self.images = [PhotoImage(file="Data/Images/Zombie_{0}.gif".format(x)) for x in range(1, 9)]
                 self.id = self.game.canvas.create_image(x, y, image=self.images[self.imgindex], anchor="nw", tags="zombie_{0}".format(self.tag))
                 self.lifelabel = LifeLabel(self.game, self, position="top")
@@ -487,16 +472,18 @@ class Patron:
 
 def main():
         global g, p, z
-        try:
-                g = Game()
-                p = Player(g)
-                g.player = p
-                z = Zombie(g, (20, -90), 50, 50, tag=g.zombies_number)
-                g.zombies_number += 1
-                g.zombies.append(z)
-                g.mainloop()
-        except Exception as e:
-                print("Program end %s" % e)
+    
+        g = Game()
+        p = Player(g)
+        g.player = p
+        z = Zombie(g, (20, -90), 50, 50, tag=g.zombies_number)
+        g.zombies_number += 1
+        g.zombies.append(z)
+        g.mainloop()
+        #try:
+        #        g.mainloop()
+        #except Exception as e:
+        #        print("Program end %s" % e)
 
 
 if __name__ == "__main__":
