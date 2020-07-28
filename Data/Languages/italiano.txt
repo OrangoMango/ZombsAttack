@@ -41,3 +41,5 @@ Più tardi
 Il gioco deve essere riavviato, dopo "ok", riapri il gioco
 Aspetta un minuto...
 Aggiornamento completato, è stato effettuato un backup della vecchia versione nella cartella ".zombsAttack/Backups" nel tuo home
+Versione
+Nome
