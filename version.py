@@ -26,7 +26,7 @@ def th(ins):
 class Version:
     def __init__(self, window):
         self.window = window
-        self.distribution = "Winux"
+        self.distribution = "Exe" if sys.argv[0].endswith(".exe") else "Winux"
         self.s = False
         t = threading.Thread(target=th, args=(self,))
         t.start()
@@ -67,10 +67,43 @@ class Version:
             d.append(x[0])
         return d
     def check(self):
-        if True: #self.get_current_version() < max(self.get_tags()):
+        if self.get_current_version() < max(self.get_tags()):
             return True
         else:
             return False
+    def upgrade(self, oldversion, newversion):
+        oldv, newv = oldversion, newversion
+        vpath = "https://github.com/OrangoMango/ZombsAttack/archive/v{0}.zip".format(newv)
+        if not os.path.exists("Versions"):
+            os.mkdir("Versions")
+        os.mkdir("Versions/{0}".format(newv))
+        r = requests.get(vpath)
+        open("Versions/{0}/{0}.zip".format(newv), "wb").write(r.content)
+        z = ZipFile("Versions/{0}/{0}.zip".format(newv), "r")
+        z.extractall(path="Versions/{0}/".format(newv))
+        oldpath = os.path.abspath(__file__+"/..")
+        print(oldpath)
+
+        if not os.path.exists("Backups"):
+            os.mkdir("Backups")
+        copy_tree(".", oldpath+"/.zombsAttack")
+        shutil.make_archive("Backups/backup_{0}".format(oldv), "zip", oldpath)
+        shutil.rmtree(oldpath+"/.zombsAttack")
+        for file in os.listdir("Versions/{0}/ZombsAttack-{0}".format(newv)):
+            if file.endswith(".py"):
+                shutil.copyfile("Versions/{0}/ZombsAttack-{0}/{1}".format(newv, file), oldpath+"/{0}".format(file))
+
+        for image in os.listdir("Versions/{0}/ZombsAttack-{0}/Data/Images".format(newv)):
+            shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Images/{1}".format(newv, image), "Data/Images/{0}".format(image))
+
+        for language in os.listdir("Versions/{0}/ZombsAttack-{0}/Data/Languages".format(newv)):
+            shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Languages/{1}".format(newv, language), "Data/Languages/{0}".format(language))
+
+        shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Images/Loadingimage.gif".format(newv), "Data/Loadingimage.gif")
+
+        with open("version.txt", "w") as f:
+            f.write(str(newv))
+            f.close()
     def show_gui(self):
         if not self.check():
             return
@@ -85,37 +118,7 @@ class Version:
             
             messagebox.showinfo(self.window.profile.language_texts[37], self.window.profile.language_texts[41])
             
-            vpath = "https://github.com/OrangoMango/ZombsAttack/archive/v{0}.zip".format(newv)
-            if not os.path.exists("Versions"):
-                os.mkdir("Versions")
-            os.mkdir("Versions/{0}".format(newv))
-            r = requests.get(vpath)
-            open("Versions/{0}/{0}.zip".format(newv), "wb").write(r.content)
-            z = ZipFile("Versions/{0}/{0}.zip".format(newv), "r")
-            z.extractall(path="Versions/{0}/".format(newv))
-            oldpath = os.path.abspath(__file__+"/..")
-            print(oldpath)
-
-            if not os.path.exists("Backups"):
-                os.mkdir("Backups")
-            copy_tree("Data", oldpath+"/Data")
-            shutil.make_archive("Backups/backup_{0}".format(oldv), "zip", oldpath)
-            shutil.rmtree(oldpath+"/Data")
-            for file in os.listdir("Versions/{0}/ZombsAttack-{0}".format(newv)):
-                if file.endswith(".py"):
-                    shutil.copyfile("Versions/{0}/ZombsAttack-{0}/{1}".format(newv, file), oldpath+"/{0}".format(file))
-
-            for image in os.listdir("Versions/{0}/ZombsAttack-{0}/Data/Images".format(newv)):
-                shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Images/{1}".format(newv, image), "Data/Images/{0}".format(image))
-
-            for language in os.listdir("Versions/{0}/ZombsAttack-{0}/Data/Languages".format(newv)):
-                shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Languages/{1}".format(newv, language), "Data/Languages/{0}".format(language))
-
-            shutil.copyfile("Versions/{0}/ZombsAttack-{0}/Data/Images/Loadingimage.gif".format(newv), "Data/Loadingimage.gif")
-
-            with open("version.txt", "w") as f:
-                f.write(str(newv))
-                f.close()
+            self.upgrade(oldv, newv)
             
             ################################
             messagebox.showinfo(self.window.profile.language_texts[37], self.window.profile.language_texts[42])

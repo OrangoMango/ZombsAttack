@@ -179,7 +179,7 @@ class Player:
                 self.mx, self.my = 0, 0
                 self.kills = 0
                 self.damage = 0
-                self.shootpointer = ShootPointer(self.game, self.mousemovement(FakeEvent()))
+                #self.shootpointer = ShootPointer(self.game, self.mousemovement(FakeEvent()))
                 self.lifelabel = LifeLabel(self.game, self)
         def mousemovement(self, event):
                 x, y = event.x, event.y

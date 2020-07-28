@@ -28,7 +28,7 @@ class ProfileButton(ScreenButton):
                 wf = self.window.canvas.create_window(110, 10, window=self.frame, anchor="nw")
                 Label(self.frame, text=self.window.profile.language_texts[21]+": {0}".format(self.name), bg="yellow").grid()
                 Label(self.frame, text=self.window.profile.language_texts[22]+":", bg="yellow").grid(row=1)
-                Button(self.frame, text=self.window.profile.language_texts[23], command=self.download_profile, bg="red").grid(column=1, row=1)
+                Button(self.frame, text=self.window.profile.language_texts[23], command=self.download_profile).grid(column=1, row=1)
                 self.backbutton.toback.append(wf)
                 ############################################
                 self.frame2 = LabelFrame(self.window.tk, text=self.window.profile.language_texts[25], bg="yellow")
@@ -43,18 +43,18 @@ class ProfileButton(ScreenButton):
 
                 def update_text_button():
                         self.selection_button.config(text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()))
-                        self.deletion_button.config(text=self.window.profile.language_texts[30]+" \"{0}\"".format(self.select.get()))
+                        self.deletion_button.config(state="disabled" if self.select.get() == self.name else "normal", text=self.window.profile.language_texts[30]+" \"{0}\"".format(self.select.get()))
                 
                 for profile in profiles_available:
                         r = Radiobutton(self.frame2, text=profile, variable=self.select, value=profile, command=update_text_button, bg="yellow4")
                         r.grid(row=profiles_available.index(profile))
                         radiobuttons.append(r)
-                self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()), bg="red", command=self.select_profile)
+                self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()), command=self.select_profile)
                 self.selection_button.grid(row=len(profiles_available))
-                self.deletion_button = Button(self.frame2, text=self.window.profile.language_texts[30]+" \"{0}\"".format(self.select.get()), bg="red", command=self.delete_profile)
+                self.deletion_button = Button(self.frame2, text=self.window.profile.language_texts[30]+" \"{0}\"".format(self.select.get()), command=self.delete_profile, state="disabled" if self.select.get() == self.name else "normal")
                 self.deletion_button.grid(row=len(profiles_available), column=1)
-                Button(self.frame2, text=self.window.profile.language_texts[27], bg="red", command=self.create_profile).grid(row=len(profiles_available)+1)
-                Button(self.frame2, text=self.window.profile.language_texts[29], bg="red", command=self.upload_profile).grid(row=len(profiles_available)+1, column=1)
+                Button(self.frame2, text=self.window.profile.language_texts[27], command=self.create_profile).grid(row=len(profiles_available)+1)
+                Button(self.frame2, text=self.window.profile.language_texts[29], command=self.upload_profile).grid(row=len(profiles_available)+1, column=1)
         def create_profile(self):
                 os.remove("profile.txt")
                 self.window.tk.destroy()
@@ -145,6 +145,14 @@ class SettingsButton(ScreenButton):
                 self.window.canvas.tag_bind(self.id, "<Button-1>", self.click)
         def click(self, event):
                 ScreenButton.click(self, event)
+                self.frame = LabelFrame(self.window.tk, text=self.window.profile.language_texts[43])
+                wf = self.window.canvas.create_window(50, 50, window=self.frame, anchor="nw")
+                nm, tg, c = self.window.version_instance.get_names(), self.window.version_instance.get_tags(), self.window.version_instance.get_current_version()
+                versionname = list(zip(nm, tg))[tg.index(c)][0]
+                tag = list(zip(nm, tg))[tg.index(c)][1]
+                Label(self.frame, text=self.window.profile.language_texts[44]+": "+versionname).grid()
+                Label(self.frame, text="Tag: "+str(tag)).grid(row=1)
+                self.backbutton.toback.append(wf)
 
 class StatisticsButton(ScreenButton):
         def __init__(self, *args):

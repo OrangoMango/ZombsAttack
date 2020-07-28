@@ -8,10 +8,10 @@ import home
 class Profile:
         def __init__(self, home):
                 self.home = home
-                self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/" #This line must be changed
-
-                #print(platform.system()) #To know platform ('Linux' or 'Windows')
-                #self.path = "C:/Users/bambini/"
+                if platform.system() == "Linux":
+                        self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/"
+                else:
+                        self.path = os.getcwd().split("\ "[0])[0]+":"+"\ "[0] + os.getcwd().split("\ "[0])[1] + "\ "[0] + os.getcwd().split("\ "[0])[2] + "\ "[0] # C: Users Name Other 
                 os.chdir(self.path)
                 self.name = ""
                 self.data = {"Trophies" : 0, "Brains" : 0, "Name" : self.name}
@@ -118,7 +118,6 @@ class Profile:
                 if os.path.exists("Profiles/"+self.name+"/"+"data.json"):
                         with open("Profiles/"+self.name+"/"+"data.json") as f:
                                 self.data = json.load(f)
-                #print(self.data) this prints current data dictionary
         def save_saves(self):
                         if os.path.exists("Profiles/"+self.name+"/"+"data.json"):
                                         with open("Profiles/"+self.name+"/"+"data.json", "w") as f:
