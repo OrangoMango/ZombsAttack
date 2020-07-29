@@ -76,7 +76,10 @@ class Version:
         vpath = "https://github.com/OrangoMango/ZombsAttack/archive/v{0}.zip".format(newv)
         if not os.path.exists("Versions"):
             os.mkdir("Versions")
-        os.mkdir("Versions/{0}".format(newv))
+        try:
+            os.mkdir("Versions/{0}".format(newv))
+        except:
+            pass
         r = requests.get(vpath)
         open("Versions/{0}/{0}.zip".format(newv), "wb").write(r.content)
         z = ZipFile("Versions/{0}/{0}.zip".format(newv), "r")
@@ -87,7 +90,7 @@ class Version:
         if not os.path.exists("Backups"):
             os.mkdir("Backups")
         copy_tree(".", oldpath+"/.zombsAttack")
-        shutil.make_archive("Backups/backup_{0}".format(oldv), "zip", oldpath)
+        shutil.make_archive("Backups/backup_{0}-{1}".format(oldv, time.strftime("%d%m%Y%H%M%S", time.localtime())), "zip", oldpath)
         shutil.rmtree(oldpath+"/.zombsAttack")
         for file in os.listdir("Versions/{0}/ZombsAttack-{0}".format(newv)):
             if file.endswith(".py"):

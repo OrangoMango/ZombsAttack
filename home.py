@@ -147,9 +147,14 @@ class SettingsButton(ScreenButton):
                 ScreenButton.click(self, event)
                 self.frame = LabelFrame(self.window.tk, text=self.window.profile.language_texts[43])
                 wf = self.window.canvas.create_window(50, 50, window=self.frame, anchor="nw")
-                nm, tg, c = self.window.version_instance.get_names(), self.window.version_instance.get_tags(), self.window.version_instance.get_current_version()
-                versionname = list(zip(nm, tg))[tg.index(c)][0]
-                tag = list(zip(nm, tg))[tg.index(c)][1]
+                try:
+                        nm, tg, c = self.window.version_instance.get_names(), self.window.version_instance.get_tags(), self.window.version_instance.get_current_version()
+                        versionname = list(zip(nm, tg))[tg.index(c)][0]
+                        tag = list(zip(nm, tg))[tg.index(c)][1]
+                except:
+                        nm, tg, c = self.window.version_instance.get_names(), self.window.version_instance.get_tags(), self.window.version_instance.get_current_version()
+                        versionname = "Development v{0}".format(c)
+                        tag = "Development"
                 Label(self.frame, text=self.window.profile.language_texts[44]+": "+versionname).grid()
                 Label(self.frame, text="Tag: "+str(tag)).grid(row=1)
                 self.backbutton.toback.append(wf)
