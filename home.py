@@ -99,13 +99,13 @@ class ProfileButton(ScreenButton):
                         return
                 f = open(path, "rb")
                 d = pickle.load(f)
-                if d["Name"] in os.listdir():
+                if d["Name"] in os.listdir("Profiles"):
                         ask = messagebox.askyesno(self.window.profile.language_texts[20], self.window.profile.language_texts[34])
                         if not ask:
                                 return
                         else:
-                                os.remove(d["Name"]+"/data.json")
-                                os.rmdir(d["Name"])
+                                os.remove("Profiles/"+d["Name"]+"/data.json")
+                                os.rmdir("Profiles/"+d["Name"])
                 self.create_manual_profile(d["Name"], d)
                 self.select_profile(name=d["Name"])
                 f.close()
