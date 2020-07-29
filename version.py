@@ -71,6 +71,15 @@ class Version:
             return True
         else:
             return False
+    def create_backup(self, version):
+        oldpath = os.path.abspath(__file__+"/..")
+        print(oldpath)
+
+        if not os.path.exists("Backups"):
+            os.mkdir("Backups")
+        copy_tree(".", oldpath+"/.zombsAttack")
+        shutil.make_archive("Backups/backup_{0}-{1}".format(version, time.strftime("%d%m%Y%H%M%S", time.localtime())), "zip", oldpath)
+        shutil.rmtree(oldpath+"/.zombsAttack")
     def upgrade(self, oldversion, newversion):
         oldv, newv = oldversion, newversion
         vpath = "https://github.com/OrangoMango/ZombsAttack/archive/v{0}.zip".format(newv)
@@ -84,14 +93,7 @@ class Version:
         open("Versions/{0}/{0}.zip".format(newv), "wb").write(r.content)
         z = ZipFile("Versions/{0}/{0}.zip".format(newv), "r")
         z.extractall(path="Versions/{0}/".format(newv))
-        oldpath = os.path.abspath(__file__+"/..")
-        print(oldpath)
-
-        if not os.path.exists("Backups"):
-            os.mkdir("Backups")
-        copy_tree(".", oldpath+"/.zombsAttack")
-        shutil.make_archive("Backups/backup_{0}-{1}".format(oldv, time.strftime("%d%m%Y%H%M%S", time.localtime())), "zip", oldpath)
-        shutil.rmtree(oldpath+"/.zombsAttack")
+        create_backup(oldv)
         for file in os.listdir("Versions/{0}/ZombsAttack-{0}".format(newv)):
             if file.endswith(".py"):
                 shutil.copyfile("Versions/{0}/ZombsAttack-{0}/{1}".format(newv, file), oldpath+"/{0}".format(file))

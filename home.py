@@ -158,6 +158,12 @@ class SettingsButton(ScreenButton):
                 Label(self.frame, text=self.window.profile.language_texts[44]+": "+versionname).grid()
                 Label(self.frame, text="Tag: "+str(tag)).grid(row=1)
                 self.backbutton.toback.append(wf)
+                def create_backup():
+                        self.window.version_instance.create_backup(self.window.version_instance.get_current_version())
+                        print("Done")
+                bb = Button(self.window.tk, text="- CREATE - Backup", command=create_backup)
+                bw = self.window.canvas.create_window(300, 90, window=bb)
+                self.backbutton.toback.append(bw)
 
 class StatisticsButton(ScreenButton):
         def __init__(self, *args):
