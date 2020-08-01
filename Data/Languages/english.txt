@@ -43,3 +43,6 @@ Wait a minute...
 Update completed, a backup has been made in the directory ".zombsAttack/Backups" in your home directory
 Version
 Name
+Create backup of version
+Backup failed
+Could not create backup
