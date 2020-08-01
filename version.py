@@ -3,7 +3,6 @@ import urllib.request, threading, time, requests, os, shutil, sys
 from tkinter import *
 from tkinter import messagebox
 from zipfile import ZipFile
-from distutils.dir_util import copy_tree
 import tkinter.ttk as t
 
 def th(ins):
@@ -24,12 +23,13 @@ def th(ins):
     tk.destroy()
 
 class Version:
-    def __init__(self, window):
+    def __init__(self, window, thread=True):
         self.window = window
         self.distribution = "Exe" if sys.argv[0].endswith(".exe") else "Winux"
         self.s = False
-        t = threading.Thread(target=th, args=(self,))
-        t.start()
+        if thread:
+            t = threading.Thread(target=th, args=(self,))
+            t.start()
         r = urllib.request.urlopen("https://github.com/OrangoMango/ZombsAttack/releases")
 
         self.versions = []
@@ -73,13 +73,14 @@ class Version:
             return False
     def create_backup(self, version):
         oldpath = os.path.abspath(__file__+"/..")
-        print(oldpath)
+        print(oldpath, os.path.abspath("."))
 
         if not os.path.exists("Backups"):
             os.mkdir("Backups")
-        copy_tree(".", oldpath+"/.zombsAttack")
+        shutil.copytree(os.path.abspath("."), oldpath+"/.zombsAttack")
         shutil.make_archive("Backups/backup_{0}-{1}".format(version, time.strftime("%d%m%Y%H%M%S", time.localtime())), "zip", oldpath)
         shutil.rmtree(oldpath+"/.zombsAttack")
+        print("Done")
     def upgrade(self, oldversion, newversion):
         oldv, newv = oldversion, newversion
         vpath = "https://github.com/OrangoMango/ZombsAttack/archive/v{0}.zip".format(newv)
@@ -136,3 +137,10 @@ class Version:
         Label(tk, text=self.window.profile.language_texts[35].format(newv), font="Calibri 12 bold", fg="blue").pack()
         Button(tk, text=self.window.profile.language_texts[38].format(newv), command=update, font="Calibri 10 bold").pack()
         Button(tk, text=self.window.profile.language_texts[39], command=later, font="Calibri 10 bold").pack()
+
+
+if __name__ == "__main__":
+    os.chdir("/home/paul/.zombsAttack")
+    v = Version(None, False)
+    for x in range(2):
+        v.create_backup(5.0)

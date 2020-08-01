@@ -159,10 +159,18 @@ class SettingsButton(ScreenButton):
                 Label(self.frame, text="Tag: "+str(tag)).grid(row=1)
                 self.backbutton.toback.append(wf)
                 def create_backup():
-                        self.window.version_instance.create_backup(self.window.version_instance.get_current_version())
-                        print("Done")
-                bb = Button(self.window.tk, text="- CREATE - Backup", command=create_backup)
-                bw = self.window.canvas.create_window(300, 90, window=bb)
+                        try:
+                                self.window.version_instance.create_backup(self.window.version_instance.get_current_version())
+                        except Exception:
+                                messagebox.showerror(self.window.profile.language_texts[46], self.window.profile.language_texts[47])
+                                shutil.rmtree(os.path.abspath(__file__+"/..")+"/.zombsAttack")
+                bb = Button(self.window.tk, text=self.window.profile.language_texts[45], command=create_backup)
+                bw = self.window.canvas.create_window(390, 90, window=bb)
+                sb = Spinbox(self.frame, values=list(reversed(self.window.version_instance.get_names())))
+                sb.grid(row=2)
+                def select_upgrade():
+                        print(int(list(zip(nm, tg))[tg.index(c)][1]))
+                Button(self.frame, text="TBD").grid(row=2, column=1)
                 self.backbutton.toback.append(bw)
 
 class StatisticsButton(ScreenButton):
@@ -225,7 +233,7 @@ class LanguageButton(ScreenButton):
 
 class Window:
         def __init__(self):
-                self.version = 5.0
+                self.version = 6.0
                 self.profile = profiles.Profile(self)
                 try:
                         self.profile.set_asset()
