@@ -169,8 +169,8 @@ class SettingsButton(ScreenButton):
                 sb = Spinbox(self.frame, values=list(reversed(self.window.version_instance.get_names())))
                 sb.grid(row=2)
                 def select_upgrade():
-                        print(int(list(zip(nm, tg))[tg.index(c)][1]))
-                Button(self.frame, text="TBD").grid(row=2, column=1)
+                        pass #print(int(list(zip(nm, tg))[tg.index(c)][1]))
+                Button(self.frame, text="TBD", command=select_upgrade).grid(row=2, column=1)
                 self.backbutton.toback.append(bw)
 
 class StatisticsButton(ScreenButton):
