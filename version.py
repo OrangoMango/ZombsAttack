@@ -46,7 +46,7 @@ class Version:
         return self.data
     def get_current_version(self):
         try:
-            with open("/home/paul/.zombsAttack/version.txt") as f:
+            with open("version.txt") as f:
                 d = f.read()
                 f.close()
                 return float(d)
