@@ -25,14 +25,14 @@ class ProfileButton(ScreenButton):
         def click(self, event):
                 ScreenButton.click(self, event)
                 self.frame = LabelFrame(self.window.tk, text=self.window.profile.language_texts[20], bg="yellow")
-                wf = self.window.canvas.create_window(110, 10, window=self.frame, anchor="nw")
+                wf = self.window.canvas.create_window(30, 10, window=self.frame, anchor="nw")
                 Label(self.frame, text=self.window.profile.language_texts[21]+": {0}".format(self.name), bg="yellow").grid()
                 Label(self.frame, text=self.window.profile.language_texts[22]+":", bg="yellow").grid(row=1)
                 Button(self.frame, text=self.window.profile.language_texts[23], command=self.download_profile).grid(column=1, row=1)
                 self.backbutton.toback.append(wf)
                 ############################################
                 self.frame2 = LabelFrame(self.window.tk, text=self.window.profile.language_texts[25], bg="yellow")
-                wf2 = self.window.canvas.create_window(110, 90, window=self.frame2, anchor="nw")
+                wf2 = self.window.canvas.create_window(30, 90, window=self.frame2, anchor="nw")
                 self.backbutton.toback.append(wf2)
                 profiles_available = []
                 for f in os.listdir("Profiles"):
@@ -161,16 +161,18 @@ class SettingsButton(ScreenButton):
                 def create_backup():
                         try:
                                 self.window.version_instance.create_backup(self.window.version_instance.get_current_version())
+                                messagebox.showinfo("Backup", self.window.profile.language_texts[48])
                         except Exception:
                                 messagebox.showerror(self.window.profile.language_texts[46], self.window.profile.language_texts[47])
                                 shutil.rmtree(os.path.abspath(__file__+"/..")+"/.zombsAttack")
                 bb = Button(self.window.tk, text=self.window.profile.language_texts[45], command=create_backup)
-                bw = self.window.canvas.create_window(390, 90, window=bb)
+                bw = self.window.canvas.create_window(390, 180, window=bb)
                 sb = Spinbox(self.frame, values=list(reversed(self.window.version_instance.get_names())))
                 sb.grid(row=2)
                 def select_upgrade():
-                        pass #print(int(list(zip(nm, tg))[tg.index(c)][1]))
-                Button(self.frame, text="TBD", command=select_upgrade).grid(row=2, column=1)
+                        print(self.window.version_instance.data)
+                        print(sb.get())
+                Button(self.frame, text=self.window.profile.language_texts[49], command=select_upgrade).grid(row=2, column=1)
                 self.backbutton.toback.append(bw)
 
 class StatisticsButton(ScreenButton):
@@ -250,7 +252,7 @@ class Window:
                 self.check_update = self.version_instance.check()
                 self.canvas = Canvas(self.tk, width=500, height=300, bg="yellow")
                 self.canvas.pack()
-                self.canvas.create_text(3, 285, font="Calibri 6 bold", anchor="nw", text="Game made by OrangoMango (Paul Kocian, SCRIPT) and Dado14 (Andrea Pintus, DESIGN) v{0} (C) 2020".format(self.version))
+                self.canvas.create_text(3, 285, font="Calibri 8 bold", anchor="nw", text="Game made by OrangoMango (Paul Kocian, SCRIPT) and Dado14 (Andrea Pintus, DESIGN) v{0} (C) 2020".format(self.version))
                 self.playbutton = PlayButton(self)
                 self.helpbutton = HelpButton(self)
                 self.languagebutton = LanguageButton(self)

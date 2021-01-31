@@ -44,6 +44,10 @@ class Version:
         for p in self.versions:
             self.data.append((p.split(">")[1].split("<")[0], p.split(">")[1].split("<")[0].split("v")[1]))
         return self.data
+    def filter_for_dist():
+        for v, t in self.data:
+            if self.distribution == "Exe":
+                pass                                      # Upgrade button
     def get_current_version(self):
         try:
             with open("version.txt") as f:
@@ -82,6 +86,7 @@ class Version:
         shutil.rmtree(oldpath+"/.zombsAttack")
         print("Done")
     def upgrade(self, oldversion, newversion):
+        oldpath = os.path.abspath(__file__+"/..")
         oldv, newv = oldversion, newversion
         vpath = "https://github.com/OrangoMango/ZombsAttack/archive/v{0}.zip".format(newv)
         if not os.path.exists("Versions"):
@@ -94,7 +99,7 @@ class Version:
         open("Versions/{0}/{0}.zip".format(newv), "wb").write(r.content)
         z = ZipFile("Versions/{0}/{0}.zip".format(newv), "r")
         z.extractall(path="Versions/{0}/".format(newv))
-        create_backup(oldv)
+        self.create_backup(oldv)
         for file in os.listdir("Versions/{0}/ZombsAttack-{0}".format(newv)):
             if file.endswith(".py"):
                 shutil.copyfile("Versions/{0}/ZombsAttack-{0}/{1}".format(newv, file), oldpath+"/{0}".format(file))
@@ -137,10 +142,3 @@ class Version:
         Label(tk, text=self.window.profile.language_texts[35].format(newv), font="Calibri 12 bold", fg="blue").pack()
         Button(tk, text=self.window.profile.language_texts[38].format(newv), command=update, font="Calibri 10 bold").pack()
         Button(tk, text=self.window.profile.language_texts[39], command=later, font="Calibri 10 bold").pack()
-
-
-if __name__ == "__main__":
-    os.chdir("/home/paul/.zombsAttack")
-    v = Version(None, False)
-    for x in range(2):
-        v.create_backup(5.0)

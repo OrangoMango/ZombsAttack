@@ -98,7 +98,6 @@ class Profile:
                 self.brains_id_x = self.home.canvas.create_rectangle(155, 5, 265, 35)
                 self.league = self.home.canvas.create_rectangle(100, 5, 130, 35, fill="orange")
         def ask_name(self, firsttime=False):
-                print(self.language_texts)
                 n = self.name
                 while self.name == "" or self.name == None or self.name in os.listdir():
                         if firsttime:
