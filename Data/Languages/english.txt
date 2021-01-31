@@ -40,9 +40,11 @@ Upgrade to {0}
 Later
 Game must be restarted, after "ok" open game again
 Wait a minute...
-Update completed, a backup has been made in the directory ".zombsAttack/Backups" in your home directory
+Update completed, a backup has been created in the folder".zombsAttack/Backups"
 Version
 Name
 Create backup of version
 Backup failed
 Could not create backup
+Backup done in .zombsAttack/Backups
+Select version

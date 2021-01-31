@@ -46,3 +46,5 @@ Nome
 Crea backup della versione
 Backup non riuscito
 Non è stato possibile creare il backup
+Backup creato in .zombsAttack/Backups
+Seleziona versione
