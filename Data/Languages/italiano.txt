@@ -29,7 +29,7 @@ Crea
 Profilo selezionato
 Carica profilo
 Cancella profilo
-Sei sicuro di voler cancellare il profilo, puoi prima scaricarlo e salvarlo nel tuo computer?
+Sei sicuro di voler cancellare il profilo? Puoi prima scaricarlo e salvarlo nel tuo computer.
 Profilo cancellato
 Impossibile cancellare il profilo corrente
 Profilo già esiste, vuoi sovrascriverlo?
