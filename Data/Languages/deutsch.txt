@@ -38,8 +38,9 @@ Aufdatierung pruefen
 Aufdatierung verfuegbar
 Version {0} herunterladen
 spaeter
+Das Spiel muss neu gestartet werden. Öffnen Sie das Spiel nach "OK" einander mal.
 Bitte warten...
-Aufdatierung beendet. Alte Versions backup in .zombsAttack/Backups geschpeichert.
+Aufdatierung beendert. Alte Versions backup in .zombsAttack/Backups geschpeichert.
 Version
 Name
 Versions backup machen
