@@ -1,0 +1,49 @@
+Toetungen
+Name eingeben
+Schaden
+Statistick
+Du hast verloren
+Weiterspielen?
+Punkte
+Gehirne
+Sprache
+Sprache gewechselt um {0}
+Diese sprache ist schon ausgewaehlt
+Leben
+keine
+Bronze
+Eisen
+Silber
+Gold
+Diamant
+Platin
+Sagenhaft
+Profil
+Profilname
+Profil herunterladen
+Herunterladen
+Profil geschpeichert
+Andere profile
+Waehle
+Kreieren
+Profil ausgewaehlt
+Profil laden
+Profil entfernen
+profil entfernen? Sie konnen das herunterladen und dann wieder laden.
+Profil entfernt
+Fehler bei entfernen aktuelles Profil
+Profil existieret, ueberschreiben?
+Aufdatierung verfuegbar, neue Version {0} herunterladen?
+Aufdatierung pruefen
+Aufdatierung verfuegbar
+Version {0} herunterladen
+spaeter
+Bitte warten...
+Aufdatierung beendet. Alte Versions backup in .zombsAttack/Backups geschpeichert.
+Version
+Name
+Versions backup machen
+Fehler beim backup
+Backup konnte nicht gemacht werden
+Backup geschpeichert in .zombsAttack/Backups
+Version waehlen
