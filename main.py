@@ -412,7 +412,7 @@ class Zombie:
                 if eval(statement):
                         direction = "e"
                         if eval(statement+"2"):
-                                if eval("stay" if self.selection == "stax" else "stay"):
+                                if eval("stay" if self.selection == "stax" else "stax"):
                                         direction = "s"
                                         if eval("stay"+"2" if self.selection == "stax" else "stay"+"2"):
                                                 direction = reversedir()
@@ -423,7 +423,7 @@ class Zombie:
                 else:
                         direction = "w"
                         if eval(statement+"2"):
-                                if eval("stay" if self.selection == "stax" else "stay"):
+                                if eval("stay" if self.selection == "stax" else "stax"):
                                         direction = "s"
                                         if eval("stay"+"2" if self.selection == "stax" else "stay"+"2"):
                                                 direction = reversedir()

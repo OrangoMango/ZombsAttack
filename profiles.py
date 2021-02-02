@@ -8,10 +8,10 @@ import home
 class Profile:
         def __init__(self, home):
                 self.home = home
-                if platform.system() == "Linux":
+                if platform.system() == "Windows":
+                        self.path = os.getcwd().split("\ "[0])[0]+":"+"\ "[0] + os.getcwd().split("\ "[0])[1] + "\ "[0] + os.getcwd().split("\ "[0])[2] + "\ "[0] # C: Users Name Other
+                else: #Linux or Mac
                         self.path = "/"+ os.getcwd().split("/")[1] + "/" + os.getcwd().split("/")[2] + "/"
-                else:
-                        self.path = os.getcwd().split("\ "[0])[0]+":"+"\ "[0] + os.getcwd().split("\ "[0])[1] + "\ "[0] + os.getcwd().split("\ "[0])[2] + "\ "[0] # C: Users Name Other 
                 os.chdir(self.path)
                 self.name = ""
                 self.data = {"Trophies" : 0, "Brains" : 0, "Name" : self.name}
@@ -77,7 +77,7 @@ class Profile:
                 f.close()
                 if not os.path.exists("Data/Languages"):
                         os.mkdir("Data/Languages")
-                        for lanfile in ["italiano", "english"]:
+                        for lanfile in ["italiano", "english", "deutsch"]:
                                 r = requests.get("https://github.com/OrangoMango/ZombsAttack/raw/master/Data/Languages/{0}.txt".format(lanfile))
                                 open("Data/Languages/{0}.txt".format(lanfile), "wb").write(r.content)
 

@@ -42,14 +42,14 @@ class ProfileButton(ScreenButton):
                 self.select.set(self.name)
 
                 def update_text_button():
-                        self.selection_button.config(text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()))
+                        self.selection_button.config(text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()), state="disabled" if self.select.get() == self.name else "normal")
                         self.deletion_button.config(state="disabled" if self.select.get() == self.name else "normal", text=self.window.profile.language_texts[30]+" \"{0}\"".format(self.select.get()))
                 
                 for profile in profiles_available:
                         r = Radiobutton(self.frame2, text=profile, variable=self.select, value=profile, command=update_text_button, bg="yellow4")
                         r.grid(row=profiles_available.index(profile))
                         radiobuttons.append(r)
-                self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()), command=self.select_profile)
+                self.selection_button = Button(self.frame2, text=self.window.profile.language_texts[26]+" \"{0}\"".format(self.select.get()), state="disabled" if self.select.get() == self.name else "normal", command=self.select_profile)
                 self.selection_button.grid(row=len(profiles_available))
                 self.deletion_button = Button(self.frame2, text=self.window.profile.language_texts[30]+" \"{0}\"".format(self.select.get()), command=self.delete_profile, state="disabled" if self.select.get() == self.name else "normal")
                 self.deletion_button.grid(row=len(profiles_available), column=1)
